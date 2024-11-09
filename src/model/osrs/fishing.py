@@ -13,7 +13,7 @@ class OSRSFishing(OSRSJagexAccountBot):
         bot_title = "Fishing"
         description = "Fishing trout and salmon"
         # Ensure to fill out the account_names.txt file or set an account name here
-        super().__init__(bot_title=bot_title, description=description, account_name="JR N0VA", debug=False)
+        super().__init__(bot_title=bot_title, description=description, debug=False)
 
         # Set option variables below (initial value is only used during headless testing)
         self.running_time = 1

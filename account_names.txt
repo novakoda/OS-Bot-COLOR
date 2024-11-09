@@ -1,3 +1,2 @@
-Add account names here, one per line:
 BBCnooz
 JR N0VA

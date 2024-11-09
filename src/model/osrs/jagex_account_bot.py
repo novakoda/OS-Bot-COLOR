@@ -14,6 +14,7 @@ def read_accounts_file_lines(file_path=ACCOUNTS_FILE):
     try:
         with open(file_path, 'r') as file:
             lines = file.readlines()
+            lines = [line.strip() for line in lines]
         return lines
     except FileNotFoundError:
         print(f"Account Names '{file_path}' not found. Please ensure you execute OSBC.py from the root directory.")
@@ -43,20 +44,22 @@ class OSRSJagexAccountBot(RuneLiteBot, metaclass=ABCMeta):
         if not accounts:
             raise Exception("No accounts found. Cannot instantiate bot.")
 
-        for account_name in accounts:
-
+        for i, account_name in enumerate(accounts):
+            window_name = f"RuneLite - {account_name}"
             print(f"Looking for '{window_name}'") if debug else ""
-            if window := pywinctl.getWindowsWithTitle(window_name):
-                # self.account_name = account_name
+            window = pywinctl.getWindowsWithTitle(window_name)
+            if window:
+                self.account_name = account_name
                 super().__init__("OSRS", bot_title, description, window=RuneLiteWindow(window_name))
-        if not window:
-            if not debug:
-                raise Exception("No runeline version found. Please ensure you're logged in.")
+                return
             else:
-                print("Printing RuneLite processes... This may take some time")
-                print("Please ensure the account you'd like to run is listed in your accounts")
-                for window in pyautogui.getAllWindows():
-                    if window.title and "runelite" in window.title.lower():
-                        print(window.title)
+                if not debug and i == len(accounts) - 1:
+                    raise Exception("No runeline version found. Please ensure you're logged in.")
+                else:
+                    print("Printing RuneLite processes... This may take some time")
+                    print("Please ensure the account you'd like to run is listed in your accounts")
+                    for window in pyautogui.getAllWindows():
+                        if window.title and "runelite" in window.title.lower():
+                            print(window.title)
 
 

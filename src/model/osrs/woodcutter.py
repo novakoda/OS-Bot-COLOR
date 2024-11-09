@@ -16,7 +16,7 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         description = (
             "This bot power-chops wood. Position your character near some trees, tag them, and press Play.\n\nLog Actions:\nDeposit in bank - Requires bank to be tagged yellow\nLight on fire: Requires tinderbox and firemaking level for logs\nDrop: Drops the logs"
         )
-        super().__init__(bot_title=bot_title, description=description, account_name="JR N0VA", debug=False)
+        super().__init__(bot_title=bot_title, description=description, debug=False)
         self.running_time = 1
         self.take_breaks = False
 
