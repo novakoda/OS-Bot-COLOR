@@ -223,6 +223,30 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             obj.set_rectangle_reference(rect)
         return objs
 
+    def get_img_in_rect(self, rect: Rectangle, item: str) -> List[RuneLiteObject]:
+        """
+        Finds all contours on screen of a particular color and returns a list of Shapes.
+        Args:
+            rect: A reference to the Rectangle that this shape belongs in (E.g., Bot.win.control_panel).
+            color: The clr.Color to search for.
+        Returns:
+            A list of RuneLiteObjects or empty list if none found.
+        """
+        img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
+        return imsearch.search_img_in_rect(img, rect, confidence=0.1)
+
+    def get_all_img_in_rect(self, rect: Rectangle, item: str) -> List[RuneLiteObject]:
+        """
+        Finds all contours on screen of a particular color and returns a list of Shapes.
+        Args:
+            rect: A reference to the Rectangle that this shape belongs in (E.g., Bot.win.control_panel).
+            color: The clr.Color to search for.
+        Returns:
+            A list of RuneLiteObjects or empty list if none found.
+        """
+        img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
+        return imsearch.search_all_img_in_rect(img, rect, confidence=0.1)
+
     def get_nearest_tag(self, color: clr.Color) -> RuneLiteObject:
         """
         Finds the nearest outlined object of a particular color within the game view and returns it as a RuneLiteObject.
@@ -253,6 +277,40 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         return empty_slots == 0
 
+    def move_mouse_to_nearest_item(self, search_item: Union[str, clr.Color], next_nearest=False):
+        """
+        Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
+        so it's been abstracted into a function.
+        Args:
+            next_nearest: If True, will move the mouse to the second nearest tree. If False, will move the mouse to the
+                          nearest tree.
+            mouseSpeed: The speed at which the mouse will move to the tree. See mouse.py for options.
+        Returns:
+            True if success, False otherwise.
+        """
+        items = (self.get_all_tagged_in_rect(self.win.game_view, search_item)
+            if isinstance(search_item, clr.Color)
+            else self.get_all_img_in_rect(self.win.game_view, search_item))
+
+        if not items:
+            return False
+
+        # Set rectangle reference for each item
+        for item in items:
+            item.set_rectangle_reference(self.win.game_view)
+
+        # If we are looking for the next nearest tree, we need to make sure trees has at least 2 elements
+        if next_nearest and len(items) < 2:
+            return False
+
+        items = sorted(items, key=RuneLiteObject.distance_from_rect_center)
+        item = items[1] if next_nearest else items[0]
+
+        if next_nearest:
+            self.mouse.move_to(item.random_point(), mouseSpeed="slow", knotsCount=2)
+        else:
+            self.mouse.move_to(item.random_point())
+        return True
     # --- Client Settings ---
     @deprecated(reason="This method is no longer needed for RuneLite games that can launch with arguments through the OSBC client.")
     def logout_runelite(self):
