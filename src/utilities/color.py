@@ -61,5 +61,6 @@ OFF_YELLOW = Color([190, 190, 0], [255, 255, 120])
 ORB_GREEN = Color([0, 255, 0], [255, 255, 0])
 ORB_RED = Color([255, 0, 0], [255, 255, 0])
 
-"""Colors for use with bank menu text"""
+"""Colors for use with menu text"""
 BANK_ORANGE = Color([255, 152, 31])
+COOK_BROWN = Color([64, 48, 32])

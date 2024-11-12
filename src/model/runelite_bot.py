@@ -272,7 +272,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         # Check each inventory slot
         for slot in self.win.inventory_slots:
-            if imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
+            if imsearch.search_img_in_rect(empty_img, slot, confidence=0.05):
                 empty_slots += 1
 
         return empty_slots == 0

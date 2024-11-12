@@ -3,6 +3,8 @@ import time
 import utilities.api.item_ids as ids
 import utilities.color as clr
 import utilities.random_util as rd
+import pyautogui as pag
+import utilities.ocr as ocr
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
 from utilities.api.morg_http_client import MorgHTTPSocket
@@ -46,10 +48,7 @@ class OSRSFisher(OSRSJagexAccountBot):
         self.options_set = True
 
     def main_loop(self):
-        # Setup API
-        # api_m = MorgHTTPSocket()
-        # api_s = StatusSocket()
-
+        print(self.is_ui_message_showing("nothing_to_cook"))
         self.log_msg("Selecting inventory...")
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
@@ -80,14 +79,14 @@ class OSRSFisher(OSRSJagexAccountBot):
             # If inventory is full, drop logs
             if self.is_inventory_full():
                 print("Inventory is full.")
-                print(self.fish_action)
                 if self.fish_action == "Deposit fish in bank":
-                    print("Depositing logs to bank...")
+                    print("Depositing fish to bank...")
                     if not self.__deposit_to_bank():
                         continue
                 elif self.fish_action == "Cook fish":
                     if not self.__cook_fish():
                         continue
+                    self.drop_all(skip_slots=self.skip_slots)
                 elif self.fish_action == "Drop fish":
                     self.drop_all(skip_slots=self.skip_slots)
                     continue
@@ -147,16 +146,7 @@ class OSRSFisher(OSRSJagexAccountBot):
             return False
         self.mouse.move_to(bank.random_point(), mouseSpeed="slow", knotsCount=2)
 
-    def __cook_fish(self):
-        """
-        Lights logs on fire.
-        Returns:
-            True if success, False otherwise.
-        """
-
-
-
-    def __move_mouse_to_nearest_fish(self, next_nearest=False):
+    def __move_mouse_to_fireplace(self):
         """
         Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
         so it's been abstracted into a function.
@@ -167,19 +157,59 @@ class OSRSFisher(OSRSJagexAccountBot):
         Returns:
             True if success, False otherwise.
         """
-        fishes = self.search_all_img_in_rect(self.win.game_view, 'Raw_salmon')
-        tree = None
-        if not fishes:
+
+        fire = self.get_nearest_tag(clr.GREEN)
+        if not fire:
             return False
-        # If we are looking for the next nearest tree, we need to make sure trees has at least 2 elements
-        if next_nearest and len(fishes) < 2:
+        self.mouse.move_to(fire.random_point(), mouseSpeed="slow", knotsCount=2)
+
+    def __cook_fish(self):
+        """
+        Lights logs on fire.
+        Returns:
+            True if success, False otherwise.
+        """
+        if self.active_message("Cooking"):
+            print("Already cooking.")
             return False
-        fishes = sorted(fishes, key=RuneLiteObject.distance_from_rect_center)
-        fish = fishes[1] if next_nearest else fishes[0]
-        if next_nearest:
-            self.mouse.move_to(tree.random_point(), mouseSpeed="slow", knotsCount=2)
-        else:
-            self.mouse.move_to(tree.random_point())
+
+        failed_searches = 0
+        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE) and not self.__move_mouse_to_fireplace():
+            failed_searches += 1
+            if failed_searches % 10 == 0:
+                self.log_msg("Searching for fireplace...")
+            if failed_searches > 60:
+                # If we've been searching for a whole minute...
+                self.__logout("No tagged fireplaces found. Logging out.")
+            time.sleep(1)
+            return False
+
+        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE):
+            print("No fireplace found.")
+            return False
+        self.mouse.click()
+
+        secs = 0
+        while not self.is_cook_menu_open():
+            print("Waiting for cooking menu to open...")
+            secs += 1
+            if secs > 4:
+                # If we've been searching for a 5 seconds...
+                return True
+            time.sleep(1)
+
+        self.log_msg("Cooking fish...")
+        pag.press("space")
+        time.sleep(3)
+        if not self.active_message("Cooking"):
+                return True
+
+        print("after sleep")
+        while not self.idle_message('NOTcooking'):
+                print("Waiting for cooking to finish...")
+                return False
+
+        self.__cook_fish()
         return True
 
     def __deposit_to_bank(self) -> bool:

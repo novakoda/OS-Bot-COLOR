@@ -241,7 +241,7 @@ class Bot(ABC):
         """
         img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
         for i, slot in enumerate(self.win.inventory_slots):
-            if imsearch.search_img_in_rect(img, slot, confidence=0.1):
+            if imsearch.search_img_in_rect(img, slot, confidence=0.2):
                 return i
         return -1
 
@@ -501,7 +501,7 @@ class Bot(ABC):
             return ocr.extract_text(self.win.mouseover, ocr.BOLD_12, color)
         return bool(ocr.find_text(contains, self.win.mouseover, ocr.BOLD_12, color))
 
-    def chatbox_text(self, contains: str = None, color: clr = clr.BLACK) -> Union[bool, str]:
+    def chatbox_text(self, contains: str = None, font: ocr = ocr.PLAIN_12, color: clr = clr.BLACK) -> Union[bool, str]:
         """
         Examines the chatbox for text. Currently only captures player chat text.
         Args:
@@ -512,8 +512,8 @@ class Bot(ABC):
             If args are left blank, returns the text in the chatbox.
         """
         if contains is None:
-            return ocr.extract_text(self.win.chat, ocr.PLAIN_12, color)
-        if ocr.find_text(contains, self.win.chat, ocr.PLAIN_12, color):
+            return ocr.extract_text(self.win.chat, font, color)
+        if ocr.find_text(contains, self.win.chat, font, color):
             return True
 
     def idle_message(self, text: str) -> Union[bool, str]:
@@ -528,7 +528,19 @@ class Bot(ABC):
         if ocr.find_text(text, self.win.game_view, ocr.PLAIN_12, clr.RED):
             return True
 
-    def is_bank_open(self) -> Union[bool, str]:
+    def active_message(self, text: str) -> bool:
+        """
+        Examines the gamewindow for text. Currently only captures player chat text.
+        Args:
+            contains: The text to search for (single word or phrase). Case sensitive. If left blank,
+                      returns all text in the chatbox.
+        Returns:
+            True if exact string is found, False otherwise.
+        """
+        if ocr.find_text(text, self.win.game_view, ocr.PLAIN_12, clr.GREEN):
+            return True
+
+    def is_bank_open(self) -> bool:
         """
         Examines the gamewindow for text. Currently only captures player chat text.
         Args:
@@ -539,6 +551,30 @@ class Bot(ABC):
         """
         if ocr.find_text('TheBankofGielinor', self.win.game_view, ocr.BOLD_12, clr.BANK_ORANGE):
             return True
+
+    def is_cook_menu_open(self) -> bool:
+        """
+        Examines the gamewindow for text. Currently only captures player chat text.
+        Args:
+            contains: The text to search for (single word or phrase). Case sensitive. If left blank,
+                      returns all text in the chatbox.
+        Returns:
+            True if exact string is found, False otherwise.
+        """
+        if ocr.find_text('Whatwouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN) or ocr.find_text('Howmanywouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
+            return True
+
+    def is_ui_message_showing(self, img_name: str) -> bool:
+        """
+        Examines the gamewindow for text. Currently only captures player chat text.
+        Args:
+            contains: The text to search for (single word or phrase). Case sensitive. If left blank,
+                      returns all text in the chatbox.
+        Returns:
+            True if exact string is found, False otherwise.
+        """
+        img = imsearch.BOT_IMAGES.joinpath("ui_templates", f"{img_name}.png")
+        return imsearch.search_all_img_in_rect(img, self.win.chat, confidence=0.08)
 
     # --- Client Settings ---
     def set_compass_north(self):
