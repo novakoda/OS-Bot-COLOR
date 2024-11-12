@@ -255,6 +255,7 @@ class Bot(ABC):
         """
         self.log_msg("Dropping inventory...")
         empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
+        burnt_img = imsearch.BOT_IMAGES.joinpath("items", "Burnt_fish.png")
         # Determine slots to skip
         if skip_slots is None:
             skip_slots = []
@@ -264,7 +265,7 @@ class Bot(ABC):
         # Start dropping
         pag.keyDown("shift")
         for i, slot in enumerate(self.win.inventory_slots):
-            if i in skip_slots or imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
+            if i in skip_slots or imsearch.search_img_in_rect(empty_img, slot, confidence=0.1) and not imsearch.search_img_in_rect(burnt_img, slot, confidence=0.2):
                 continue
             p = slot.random_point()
             self.mouse.move_to(

@@ -48,7 +48,6 @@ class OSRSFisher(OSRSJagexAccountBot):
         self.options_set = True
 
     def main_loop(self):
-        print(self.is_ui_message_showing("nothing_to_cook"))
         self.log_msg("Selecting inventory...")
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
@@ -78,16 +77,17 @@ class OSRSFisher(OSRSJagexAccountBot):
 
             # If inventory is full, drop logs
             if self.is_inventory_full():
-                print("Inventory is full.")
                 if self.fish_action == "Deposit fish in bank":
-                    print("Depositing fish to bank...")
                     if not self.__deposit_to_bank():
                         continue
                 elif self.fish_action == "Cook fish":
+                    self.log_msg("Cooking fish...")
                     if not self.__cook_fish():
                         continue
+                    self.log_msg("Dropping cooked fish...")
                     self.drop_all(skip_slots=self.skip_slots)
                 elif self.fish_action == "Drop fish":
+                    self.log_msg("Dropping fish...")
                     self.drop_all(skip_slots=self.skip_slots)
                     continue
 
@@ -96,10 +96,10 @@ class OSRSFisher(OSRSJagexAccountBot):
             if not self.mouseover_text(contains="Lure", color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item('Raw_salmon'):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
-                    self.log_msg("Searching for trees...")
+                    self.log_msg("Searching for fishing spots...")
                 if failed_searches > 60:
                     # If we've been searching for a whole minute...
-                    self.__logout("No tagged trees found. Logging out.")
+                    self.__logout("No fishing spots found. Logging out.")
                 time.sleep(1)
                 continue
             failed_searches = 0  # If code got here, a tree was found
@@ -170,7 +170,6 @@ class OSRSFisher(OSRSJagexAccountBot):
             True if success, False otherwise.
         """
         if self.active_message("Cooking"):
-            print("Already cooking.")
             return False
 
         failed_searches = 0
@@ -193,12 +192,11 @@ class OSRSFisher(OSRSJagexAccountBot):
         while not self.is_cook_menu_open():
             print("Waiting for cooking menu to open...")
             secs += 1
-            if secs > 4:
-                # If we've been searching for a 5 seconds...
+            if secs > 6:
+                # If we've been searching for 7 seconds...
                 return True
             time.sleep(1)
 
-        self.log_msg("Cooking fish...")
         pag.press("space")
         time.sleep(3)
         if not self.active_message("Cooking"):
@@ -206,7 +204,6 @@ class OSRSFisher(OSRSJagexAccountBot):
 
         print("after sleep")
         while not self.idle_message('NOTcooking'):
-                print("Waiting for cooking to finish...")
                 return False
 
         self.__cook_fish()
