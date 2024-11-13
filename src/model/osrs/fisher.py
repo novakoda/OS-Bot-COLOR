@@ -26,7 +26,7 @@ class OSRSFisher(OSRSJagexAccountBot):
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
-        self.options_builder.add_dropdown_option("fish_action", "When full inventory:", ["Deposit fish in bank", "Cook fish", "Drop fish"])
+        self.options_builder.add_dropdown_option("fish_action", "When full inventory:", ["Cook fish", "Drop fish", "Deposit fish in bank"])
 
     def save_options(self, options: dict):
         for option in options:
@@ -75,13 +75,11 @@ class OSRSFisher(OSRSJagexAccountBot):
             # if rd.random_chance(probability=0.02):
             #     self.__drop_logs(api_s)
 
-            # If inventory is full, drop logs
             if self.is_inventory_full():
                 if self.fish_action == "Deposit fish in bank":
                     if not self.__deposit_to_bank():
                         continue
                 elif self.fish_action == "Cook fish":
-                    self.log_msg("Cooking fish...")
                     if not self.__cook_fish():
                         continue
                     self.log_msg("Dropping cooked fish...")
@@ -90,7 +88,6 @@ class OSRSFisher(OSRSJagexAccountBot):
                     self.log_msg("Dropping fish...")
                     self.drop_all(skip_slots=self.skip_slots)
                     continue
-
 
             # If our mouse isn't hovering over a tree, and we can't find another tree...
             if not self.mouseover_text(contains="Lure", color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item('Raw_salmon'):
@@ -112,7 +109,7 @@ class OSRSFisher(OSRSJagexAccountBot):
 
             # While the player is chopping (or moving), wait
             probability = 0.10
-            while not self.idle_message('NOTfishing'):
+            while not self.idle_message('NOTfishing') and self.active_message('Fishing'):
                 # Every second there is a chance to move the mouse to the next tree, lessen the chance as time goes on
                 if rd.random_chance(probability):
                     self.move_mouse_to_nearest_item('Raw_salmon', next_nearest=True)
@@ -184,13 +181,11 @@ class OSRSFisher(OSRSJagexAccountBot):
             return False
 
         if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE):
-            print("No fireplace found.")
             return False
         self.mouse.click()
 
         secs = 0
         while not self.is_cook_menu_open():
-            print("Waiting for cooking menu to open...")
             secs += 1
             if secs > 6:
                 # If we've been searching for 7 seconds...
@@ -202,7 +197,6 @@ class OSRSFisher(OSRSJagexAccountBot):
         if not self.active_message("Cooking"):
                 return True
 
-        print("after sleep")
         while not self.idle_message('NOTcooking'):
                 return False
 
