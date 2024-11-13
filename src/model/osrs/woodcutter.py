@@ -85,7 +85,7 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
 
 
             # If our mouse isn't hovering over a tree, and we can't find another tree...
-            if not self.mouseover_text(contains="Chop", color=clr.OFF_WHITE) and not self.__move_mouse_to_nearest_tree():
+            if not self.mouseover_text(contains="Chop", color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.PINK):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for trees...")
@@ -107,7 +107,7 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
             while not self.idle_message('NOTwoodcutting'):
                 # Every second there is a chance to move the mouse to the next tree, lessen the chance as time goes on
                 if rd.random_chance(probability):
-                    self.__move_mouse_to_nearest_tree(next_nearest=True)
+                    self.move_mouse_to_nearest_item(clr.PINK, next_nearest=True)
                     probability /= 2
                 time.sleep(1)
 
@@ -150,32 +150,6 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         if tinderbox_slot != -1:
             self.set_fires(tinderbox_slot)
             time.sleep(1)
-
-    def __move_mouse_to_nearest_tree(self, next_nearest=False):
-        """
-        Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
-        so it's been abstracted into a function.
-        Args:
-            next_nearest: If True, will move the mouse to the second nearest tree. If False, will move the mouse to the
-                          nearest tree.
-            mouseSpeed: The speed at which the mouse will move to the tree. See mouse.py for options.
-        Returns:
-            True if success, False otherwise.
-        """
-        trees = self.get_all_tagged_in_rect(self.win.game_view, clr.PINK)
-        tree = None
-        if not trees:
-            return False
-        # If we are looking for the next nearest tree, we need to make sure trees has at least 2 elements
-        if next_nearest and len(trees) < 2:
-            return False
-        trees = sorted(trees, key=RuneLiteObject.distance_from_rect_center)
-        tree = trees[1] if next_nearest else trees[0]
-        if next_nearest:
-            self.mouse.move_to(tree.random_point(), mouseSpeed="slow", knotsCount=2)
-        else:
-            self.mouse.move_to(tree.random_point())
-        return True
 
     def __deposit_to_bank(self) -> bool:
         """
