@@ -2,7 +2,6 @@
 The OSRSJagexAccountBot class for launching bots via Runelite for a Jagex Account
 """
 from abc import ABCMeta
-import wmi
 import pywinctl
 import pyautogui
 

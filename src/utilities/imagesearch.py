@@ -36,11 +36,12 @@ def __imagesearcharea(template: Union[cv2.Mat, str, Path], im: cv2.Mat, confiden
     correlation = cv2.matchTemplate(im, base, cv2.TM_SQDIFF_NORMED, mask=alpha)
     min_val, _, min_loc, _ = cv2.minMaxLoc(correlation)
     if min_val < confidence:
+        print('found match under conf ', min_val, confidence)
         return Rectangle.from_points(Point(min_loc[0], min_loc[1]), Point(min_loc[0] + ww, min_loc[1] + hh))
     return None
 
 
-def search_img_in_rect(image: Union[cv2.Mat, str, Path], rect: Union[Rectangle, cv2.Mat], confidence=0.15) -> Rectangle:
+def search_img_in_rect(image: Union[cv2.Mat, str, Path], rect: Union[Rectangle, cv2.Mat], confidence=0.2) -> Rectangle:
     """
     Searches for an image in a rectangle. This function works with images containing transparency (sprites).
     Args:

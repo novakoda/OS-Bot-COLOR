@@ -232,7 +232,7 @@ class Bot(ABC):
         """
         self.controller.clear_log()
 
-    def get_item_slot(self, item: str = '') -> None:
+    def get_item_slot(self, item: str = '', conf: float = 0.2) -> None:
         """
         Shift-clicks all items in the inventory to drop them.
         Args:
@@ -240,8 +240,10 @@ class Bot(ABC):
             skip_slots: The indices of slots to avoid dropping.
         """
         img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
+        print('searching for ', img)
         for i, slot in enumerate(self.win.inventory_slots):
-            if imsearch.search_img_in_rect(img, slot, confidence=0.2):
+            if imsearch.search_img_in_rect(img, slot, confidence=conf):
+                print('found in slot ', i)
                 return i
         return -1
 
@@ -303,7 +305,24 @@ class Bot(ABC):
             self.mouse.click()
         pag.keyUp("shift")
 
-    def deposit(self) -> None:
+    def move_mouse_to_bank(self):
+        """
+        Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
+        so it's been abstracted into a function.
+        Args:
+            next_nearest: If True, will move the mouse to the second nearest tree. If False, will move the mouse to the
+                          nearest tree.
+            mouseSpeed: The speed at which the mouse will move to the tree. See mouse.py for options.
+        Returns:
+            True if success, False otherwise.
+        """
+
+        bank = self.get_nearest_tag(clr.YELLOW)
+        if not bank:
+            return False
+        self.mouse.move_to(bank.random_point(), mouseSpeed="slow", knotsCount=2)
+
+    def deposit(self, skip_slots: List[int] = None, keep_open: bool = False) -> None:
         """
         Shift-clicks inventory slots to drop items.
         Args:
@@ -311,9 +330,11 @@ class Bot(ABC):
         """
         self.log_msg("Depositing items to bank...")
         empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
+        if skip_slots is None:
+            skip_slots = []
 
-        for slot in self.win.inventory_slots:
-            if imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
+        for i, slot in enumerate(self.win.inventory_slots):
+            if i in skip_slots or imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
                 continue
             p = slot.random_point()
             self.mouse.move_to(
@@ -326,7 +347,60 @@ class Bot(ABC):
             )
             self.mouse.click()
         time.sleep(1)
-        pag.press("esc")
+
+        if not keep_open:
+            pag.press("esc")
+
+    def deposit_to_bank(self, skip_slots: List[int] = None, keep_open: bool = False) -> bool:
+        """
+        Handles finding and interacting with the bank when inventory is full.
+        Returns:
+            True if banking was successful, False if bank couldn't be found
+        """
+        failed_searches = 0
+        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE) and not self.move_mouse_to_bank():
+            failed_searches += 1
+            if failed_searches % 10 == 0:
+                self.log_msg("Searching for bank...")
+            if failed_searches > 60:
+                # If we've been searching for a whole minute...
+                self.logout("No tagged banks found. Logging out.")
+            time.sleep(1)
+            return False
+
+        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
+            return False
+
+        self.mouse.click()
+        self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="slow", knotsCount=2)
+
+        while not self.is_bank_open():
+            print("waiting for bank to open")
+            time.sleep(1)
+
+        print('depositing')
+
+        self.deposit(skip_slots, keep_open)
+        return True
+
+    def withdraw_item(self, item: str = '', keep_open: bool = False, conf: float = 0.2) -> bool:
+        """
+        Handles finding and interacting with the bank when inventory is full.
+        Returns:
+            True if banking was successful, False if bank couldn't be found
+        """
+        slot = imsearch.search_img_in_rect(imsearch.BOT_IMAGES.joinpath("items", f"{item}.png"), self.win.game_view, conf)
+        if slot:
+            self.mouse.move_to(slot.random_point())
+            self.mouse.click()
+
+        if not keep_open:
+            pag.press("esc")
+
+    def logout(self, msg):
+        self.log_msg(msg)
+        self.logout()
+        self.stop()
 
     def set_fires(self, tinderbox_slot: int = -1) -> None:
         """
@@ -550,7 +624,7 @@ class Bot(ABC):
         Returns:
             True if exact string is found, False otherwise.
         """
-        if ocr.find_text('TheBankofGielinor', self.win.game_view, ocr.BOLD_12, clr.BANK_ORANGE):
+        if ocr.find_text(['TheBankofGielinor', 'Tab7'], self.win.game_view, ocr.BOLD_12, clr.BANK_ORANGE):
             return True
 
     def is_cook_menu_open(self) -> bool:
@@ -563,6 +637,18 @@ class Bot(ABC):
             True if exact string is found, False otherwise.
         """
         if ocr.find_text('Whatwouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN) or ocr.find_text('Howmanywouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
+            return True
+
+    def is_smelt_menu_open(self) -> bool:
+        """
+        Examines the gamewindow for text. Currently only captures player chat text.
+        Args:
+            contains: The text to search for (single word or phrase). Case sensitive. If left blank,
+                      returns all text in the chatbox.
+        Returns:
+            True if exact string is found, False otherwise.
+        """
+        if ocr.find_text('Whatwouldyouliketosmelt', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
             return True
 
     def is_ui_message_showing(self, img_name: str) -> bool:

@@ -19,6 +19,7 @@ class OSRSMiner(OSRSJagexAccountBot):
         super().__init__(bot_title=bot_title, description=description, debug=False)
         self.running_time = 1
         self.take_breaks = False
+        self.skip_slots = []
 
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
@@ -45,10 +46,6 @@ class OSRSMiner(OSRSJagexAccountBot):
         self.options_set = True
 
     def main_loop(self):
-        # Setup API
-        # api_m = MorgHTTPSocket()
-        # api_s = StatusSocket()
-
         self.log_msg("Selecting inventory...")
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
@@ -61,6 +58,10 @@ class OSRSMiner(OSRSJagexAccountBot):
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
             # 5% chance to take a break between tree searches
+            pick_slot = self.get_item_slot("Rune_pickaxe")
+            if self.skip_slots.count(pick_slot) == 0:
+                    self.skip_slots.append(pick_slot)
+
             if rd.random_chance(probability=0.05) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
 
@@ -80,7 +81,7 @@ class OSRSMiner(OSRSJagexAccountBot):
                     if not self.__light_logs_on_fire():
                         continue
                 elif self.ore_action == "Drop ore":
-                    self.drop_all()
+                    self.drop_all(skip_slots=self.skip_slots)
                     continue
 
 
