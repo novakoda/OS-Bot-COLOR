@@ -395,6 +395,7 @@ class Bot(ABC):
             self.mouse.click()
 
         if not keep_open:
+            time.sleep(1)
             pag.press("esc")
 
     def logout(self, msg):
@@ -648,7 +649,7 @@ class Bot(ABC):
         Returns:
             True if exact string is found, False otherwise.
         """
-        if ocr.find_text('Whatwouldyouliketosmelt', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
+        if ocr.find_text(['Whatwouldyouliketosmelt','Howmanywouldyouliketocreate'], self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
             return True
 
     def is_ui_message_showing(self, img_name: str) -> bool:

@@ -4,6 +4,7 @@ import utilities.api.item_ids as ids
 import utilities.color as clr
 import utilities.random_util as rd
 import utilities.imagesearch as imsearch
+import random
 import pyautogui as pag
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
@@ -26,7 +27,7 @@ class OSRSSmelter(OSRSJagexAccountBot):
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 5, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
-        self.options_builder.add_dropdown_option("ore_type", "Ore Type:", ["Silver", "Iron"])
+        self.options_builder.add_dropdown_option("ore_type", "Ore Type:", ["Silver", "Iron", "Gold Bar"])
 
     def save_options(self, options: dict):
         for option in options:
@@ -106,6 +107,29 @@ class OSRSSmelter(OSRSJagexAccountBot):
 
                 self.withdraw_item("Silver_ore")
 
+            elif self.ore_type == "Gold Bar":
+                # Verify inventory has tiara mould
+                tiara_slot = self.get_item_slot("Tiara_mould")
+
+                if tiara_slot == -1:
+                    self.log_msg("Missing tiara mould!")
+                    continue
+
+                if self.skip_slots.count(tiara_slot) == 0:
+                    self.skip_slots.append(tiara_slot)
+
+                if not self.__craft_tiaras("Gold_bar"):
+                    continue
+
+                while self.get_item_slot("Gold_bar") != -1:
+                    time.sleep(1)
+
+                # Bank items (except tiara mould)
+                if not self.deposit_to_bank(self.skip_slots, True):
+                    continue
+
+                self.withdraw_item("Gold_bar")
+
             self.update_progress((time.time() - start_time) / end_time)
 
         self.update_progress(1)
@@ -134,21 +158,29 @@ class OSRSSmelter(OSRSJagexAccountBot):
         pag.press(key)
         return True
 
-    def __craft_tiaras(self):
+    def __craft_tiaras(self, bar: str = "Silver_bar") -> bool:
         """
         Smelts ore and deposits the result to the bank.
         Returns:
             True if successful, False otherwise.
         """
-        if self.get_item_slot("Silver_bar") == -1:
+        if self.get_item_slot(bar) == -1:
             return True
 
         if not self.__click_furnace():
             return False
 
         # Click furnace again
-        self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="slow", knotsCount=2)
-        time.sleep(1)
+        random_tab = random.choice(self.win.chat_tabs)
+        self.mouse.move_to(random_tab.random_point(), mouseSpeed="slow", knotsCount=2)
+
+        secs = 0
+        while not self.is_smelt_menu_open():
+            secs += 1
+            if secs > 6:
+                # If we've been searching for 7 seconds...
+                return False
+            time.sleep(1)
 
         pag.press("space")
         return True
