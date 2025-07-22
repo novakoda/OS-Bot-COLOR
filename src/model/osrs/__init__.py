@@ -6,3 +6,4 @@ from .smelter import OSRSSmelter
 from .runner import OSRSRunner
 from .constructor import OSRSConstructor
 from .fletcher import OSRSFletcher
+from .thief import OSRSThief
