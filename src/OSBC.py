@@ -88,71 +88,52 @@ class App(customtkinter.CTk):
 
         # Configure grid layout
         self.frame_left.grid_columnconfigure(0, weight=0)  # label
-        self.frame_left.grid_columnconfigure(1, weight=0)  # dropdown
         self.frame_left.grid_rowconfigure(2, weight=1)  # buttons
         self.frame_left.grid_rowconfigure(3, weight=0)  # settings
 
-        # Label and dropdown menu inside the scrollable frame
-        self.label_1 = customtkinter.CTkLabel(master=self.frame_left, text="Scripts", font=heading_font())
+        # Label for scripts
+        self.label_1 = customtkinter.CTkLabel(master=self.frame_left, text="OSRS Scripts", font=heading_font())
         self.label_1.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-        # Create Scrollable Frame
+        # Create Scrollable Frame for OSRS scripts
         self.scrollable_frame_left = customtkinter.CTkScrollableFrame(master=self.frame_left, width=160, fg_color="#2b2b2b", scrollbar_button_color="#333333")
         self.scrollable_frame_left.grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
 
         # ============ Bot/Button Configuration (scrollable_frame_left) ============
-        # Dynamically import all bots from the model folder and add them to the UI
-        # If your bot is not appearing, make sure it is referenced in the __init__.py file of the folder it exists in.
-
-        # Button map
-        # Key value pairs of game titles and a list of buttons for that game.
-        # This is populated below.
+        # Dynamically import all OSRS bots and add them to the UI
         self.btn_map: dict[str, List[customtkinter.CTkButton]] = {
-            "Select a game": [],
+            "OSRS": [],
         }
 
-        # Dropdown menu for selecting a game
-        self.menu_game_selector = customtkinter.CTkOptionMenu(
-            master=self.frame_left,
-            font=body_large_font(),
-            dropdown_font=body_med_font(),
-            values=list(self.btn_map.keys()),
-            command=self.__on_game_selector_change,
-        )
-        self.menu_game_selector.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+        # Ensure the OSRS home view exists
+        if "OSRS" not in self.views:
+            self.views["OSRS"] = HomeView(parent=self.frame_right, main=self, game_title="OSRS")
 
-        module = importlib.import_module("model")
+        module = importlib.import_module("model.osrs")
         names = dir(module)
         for name in names:
             obj = getattr(module, name)
-            if obj is not Bot and obj is not RuneLiteBot and isinstance(obj, type) and issubclass(obj, Bot):
+            if obj is not Bot and isinstance(obj, type) and issubclass(obj, Bot):
                 instance = obj()
-                # Make a home view if one doesn't exist
-                if isinstance(instance, RuneLiteBot) and instance.game_title not in self.views:
-                    self.views[instance.game_title] = RuneLiteHomeView(parent=self, main=self, game_title=instance.game_title)
-                elif isinstance(instance, Bot) and instance.game_title not in self.views:
-                    self.views[instance.game_title] = HomeView(parent=self, main=self, game_title=instance.game_title)
-                # Make a button section if one doesn't exist
-                if instance.game_title not in self.btn_map:
-                    self.btn_map[instance.game_title] = []
                 instance.set_controller(self.controller)
                 self.models[name] = instance
-                self.btn_map[instance.game_title].append(self.__create_button(bot_key=name, launchable=isinstance(instance, Launchable)))
+                self.btn_map["OSRS"].append(self.__create_button(bot_key=name, launchable=isinstance(instance, Launchable)))
 
-        # Configure the dropdown values to be list(self.btn_map.keys())
-        self.menu_game_selector.configure(values=list(self.btn_map.keys()))
+        # Pack OSRS buttons
+        self.current_btn_list = self.btn_map["OSRS"]
+        for r, btn in enumerate(self.current_btn_list, 3):
+            btn.grid(row=r, column=0, sticky="we", padx=10, pady=10)
 
-        # Settings Button (in the position of the Theme Switch)
-        self.btn_settings = customtkinter.CTkButton(
-            master=self.frame_left,
-            fg_color="#2a2d2e",
-            hover_color=self.DEFAULT_GRAY,
-            text="Settings",
-            font=button_med_font(),
-            image=self.img_settings,
-            command=self.__on_settings_clicked,
+        # Pack OSRS home view
+        self.current_home_view = self.views["OSRS"]
+        self.current_home_view.pack(
+            in_=self.frame_right,
+            side=tkinter.TOP,
+            fill=tkinter.BOTH,
+            expand=True,
+            padx=0,
+            pady=0,
         )
-        self.btn_settings.grid(row=3, column=0, pady=(5, 10), padx=5)
 
         # Status variables to track state of views and buttons
         self.current_home_view: customtkinter.CTkFrame = self.views["Select a game"]
