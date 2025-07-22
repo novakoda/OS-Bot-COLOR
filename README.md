@@ -15,13 +15,14 @@ OS Bot COLOR (OSBC) is a desktop client for controlling and monitoring automatio
 1. Install [Python 3.10](https://www.python.org/downloads/release/python-3109/) *(not compatible with other major versions)*
 2. Clone/download this repository
 3. Open the project folder in your IDE of choice (Visual Studio Code recommended)
-4. Open the repository folder in a terminal window
+4. Open `account_names.txt` and put your runescape account name
+5. Open the repository folder in a terminal window
    1. Create a virtual environment ```py -3.10 -m venv env```
    2. Activate the newly created virtual environment ```.\env\Scripts\activate```
    3. Install the depedencies ```pip install -r requirements.txt```
-5. Run `./src/OSBC.py` *(may need to restart IDE for it to recognize installed dependencies)*
-6. If asked what program to run the script with, navigate to where python was installed in step 1
-7. If getting errors for modules not existing e.g. `ImportError: No module named customtkinter` install the module `pip install customtkinter` and verify `pip show customtkinter` then run `python src/OSBC.py` again. Repeat this for each module that does not exist.
+6. Run `./src/OSBC.py` *(may need to restart IDE for it to recognize installed dependencies)*
+7. If asked what program to run the script with, navigate to where python was installed in step 1
+8. If getting errors for modules not existing e.g. `ImportError: No module named customtkinter` install the module `pip install customtkinter` and verify `pip show customtkinter` then run `python src/OSBC.py` again. Repeat this for each module that does not exist.
 
 # Profile Setup
 On the side panel choose configuration, navigate to the profile section, and select Import Profile.
