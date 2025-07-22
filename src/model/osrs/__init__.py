@@ -5,3 +5,4 @@ from .miner import OSRSMiner
 from .smelter import OSRSSmelter
 from .runner import OSRSRunner
 from .constructor import OSRSConstructor
+from .fletcher import OSRSFletcher
