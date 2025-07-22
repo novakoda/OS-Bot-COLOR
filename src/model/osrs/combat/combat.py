@@ -101,7 +101,7 @@ class OSRSCombat(OSRSBot, launcher.Launchable):
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
             # If inventory is full...
-            if api_status.get_is_inv_full():
+            if self.is_inventory_full():
                 self.log_msg("Inventory is full. Idk what to do.")
                 self.set_status(BotStatus.STOPPED)
                 return
