@@ -324,7 +324,7 @@ class Bot(ABC):
 
     def logout(self, msg):
         self.log_msg(msg)
-        self.logout()
+        self.log_out()
         self.stop()
 
     def set_fires(self, tinderbox_slot: int = -1) -> None:
@@ -378,7 +378,7 @@ class Bot(ABC):
         mean = only_friends.mean(axis=(0, 1))
         return mean != 0.0
 
-    def logout(self):  # sourcery skip: class-extract-method
+    def log_out(self):  # sourcery skip: class-extract-method
         """
         Logs player out.
         """
