@@ -247,6 +247,23 @@ class Bot(ABC):
                 return i
         return -1
 
+    def get_item_count(self, item: str = '', conf: float = 0.2) -> int:
+        """
+        Counts the number of occurrences of a specific item in the inventory.
+        Args:
+            item: The name of the item to count.
+            conf: The confidence threshold for image matching.
+        Returns:
+            The number of items found in the inventory.
+        """
+        count = 0
+        img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
+        for slot in self.win.inventory_slots:
+            if imsearch.search_img_in_rect(img, slot, confidence=conf):
+                count += 1
+        print(f"Found {count} {item} in inventory")
+        return count
+
     # --- Misc Utility Functions
     def drop_all(self, skip_rows: int = 0, skip_slots: List[int] = None) -> None:
         """
