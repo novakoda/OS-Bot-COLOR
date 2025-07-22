@@ -19,7 +19,72 @@ OS Bot COLOR (OSBC) is a desktop client for controlling and monitoring automatio
    1. Create a virtual environment ```py -3.10 -m venv env```
    2. Activate the newly created virtual environment ```.\env\Scripts\activate```
    3. Install the depedencies ```pip install -r requirements.txt```
-5. Run `./src/*OSBC.py*` *(may need to restart IDE for it to recognize installed dependencies)*
+5. Run `./src/OSBC.py` *(may need to restart IDE for it to recognize installed dependencies)*
+6. If asked what program to run the script with, navigate to where python was installed in step 1
+7. If getting errors for modules not existing e.g. `ImportError: No module named customtkinter` install the module `pip install customtkinter` and verify `pip show customtkinter` then run `python src/OSBC.py` again. Repeat this for each module that does not exist.
+
+# Profile Setup
+On the side panel choose configuration, navigate to the profile section, and select Import Profile.
+![screenshot](https://user-images.githubusercontent.com/14265490/220759603-be614ade-022d-4b5f-bf91-8d40e62159ac.png)
+
+Navigate to the RUNELITE PROFILE folder in this repo and select `NovaColors.properties`
+
+## Tagging Objects
+You must first have the NovaColors profile selected
+
+### To tag an object
+Shift + Right Click an object and select `Mark Object {ObjectName}`
+
+
+### To change the tag color
+Shift + Right click the object again and choose `Mark border color {ObjectName}` -> select a color
+
+
+### To remove a tag
+Shift + Right click the object and choose `Unmark Object {ObjectName}`
+
+# Scripts
+## Fisher
+This bot fishes. Position your character near some fishing spots, tag them, and press Play.
+
+Options:
+Deposit in bank - Requires bank to be tagged yellow
+
+Cook and drop: Requires cooking place to be marked yellow
+
+Drop: Drops the fish
+
+## Miner
+This bot mines ores. Position your character near mining rocks, tag them, and press Play.
+
+Options:
+Deposit in bank - Requires bank to be tagged yellow
+
+Drop: Drops the ores
+
+## Runner
+This bot runs between two points. Tag the start and end points, and press Play.
+
+Options:
+Loop count - Set the number of times to run the route
+
+Pause between runs - Adds a delay between each run
+
+## Smelter
+This bot smelts ores into bars. Position your character near a furnace, tag it, and press Play.
+
+Options:
+Deposit in bank - Requires bank to be tagged yellow
+
+Drop: Drops the bars
+
+## Woodcutter
+This bot chops trees. Position your character near trees, tag them, and press Play.
+
+Options:
+Deposit in bank - Requires bank to be tagged yellow
+
+Drop: Drops the logs
 
 # Documentation
 
