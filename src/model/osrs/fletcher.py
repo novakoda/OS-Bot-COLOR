@@ -74,17 +74,14 @@ class OSRSFletcher(OSRSJagexAccountBot):
             # Alternate the order of clicking items
             if alternate:
                 self.__click_item(self.item_slot_2)
-                time.sleep(0.5 + random.betavariate(1, 3))
                 self.__click_item(self.item_slot_1)
             else:
                 self.__click_item(self.item_slot_1)
-                time.sleep(0.5 + random.betavariate(1, 3))
                 self.__click_item(self.item_slot_2)
             alternate = not alternate  # Toggle the flag for the next iteration
 
-            time.sleep(0.5 + random.betavariate(1, 3))
-            pag.press("space")
-            time.sleep(9 + random.betavariate(1, 3))
+            # pag.press("space")
+            # time.sleep(9 + random.betavariate(1, 3))
 
             self.update_progress((time.time() - start_time) / end_time)
 

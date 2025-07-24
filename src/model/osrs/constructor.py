@@ -71,7 +71,7 @@ class OSRSConstructor(OSRSJagexAccountBot):
                         continue
                     print("Waiting for mahogany planks...")
                     continue
-                
+
                 # build the table or destroy the table
                 if not self.__click_object([(clr.PINK, "6"), (clr.YELLOW, "1")]):
                     continue
@@ -105,14 +105,14 @@ class OSRSConstructor(OSRSJagexAccountBot):
         if self.get_item_count("Mahogany_plank") < 6:
             print("Not enough mahogany planks, waiting for more...")
             pag.press("1")
-            if not self.__click_object([(clr.CYAN, "space")]):
+            if not self.__click_object([(clr.CYAN, "space"), (clr.YELLOW, "1")]):
                 print("Paying butler...")
                 time.sleep(2)
                 self.__talk_to_butler()
 
         return True
 
-    def __click_object(self, color_key_pairs: list[tuple[clr, str]], wait: float = 2.5):
+    def __click_object(self, color_key_pairs: list[tuple[clr, str]], wait: float = 1.5):
         """
         Attempts to click an object with any of the provided color-key pairs.
         Args:
