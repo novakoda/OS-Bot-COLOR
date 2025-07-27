@@ -278,7 +278,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         return empty_slots == 0
 
-    def move_mouse_to_nearest_item(self, search_item: Union[str, clr.Color], next_nearest=False):
+    def move_mouse_to_nearest_item(self, search_item: Union[str, clr.Color], next_nearest=False, speed="slow"):
         """
         Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
         so it's been abstracted into a function.
@@ -308,7 +308,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         item = items[1] if next_nearest else items[0]
 
         if next_nearest:
-            self.mouse.move_to(item.random_point(), mouseSpeed="slow", knotsCount=2)
+            self.mouse.move_to(item.random_point(), mouseSpeed=speed, knotsCount=2)
         else:
             self.mouse.move_to(item.random_point())
         return True

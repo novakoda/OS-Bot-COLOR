@@ -63,7 +63,7 @@ class OSRSHunter(OSRSJagexAccountBot):
             if rd.random_chance(probability=0.05) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
 
-            if not self.mouseover_text(contains="Catch") and not self.move_mouse_to_nearest_item(clr.CYAN):
+            if not self.mouseover_text(contains="Catch") and not self.move_mouse_to_nearest_item(clr.CYAN, speed="fast"):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for tagged items...")
