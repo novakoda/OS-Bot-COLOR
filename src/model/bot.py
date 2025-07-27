@@ -298,6 +298,27 @@ class Bot(ABC):
             self.mouse.click()
         pag.keyUp("shift")
 
+    def click_inventory_slot(self, slot: int, wait: float = 0.5):
+        """
+        Clicks the item in the specified inventory slot.
+        Args:
+            slot: The inventory slot to click (0-27).
+        Returns:
+            True if successful, False otherwise.
+        """
+        t = self.win.inventory_slots[slot].random_point()
+        self.mouse.move_to(
+            (t[0], t[1]),
+            mouseSpeed="fastest",
+            knotsCount=1,
+            offsetBoundaryY=40,
+            offsetBoundaryX=40,
+            tween=pytweening.easeInOutQuad,
+        )
+        self.mouse.click()
+        time.sleep(wait)
+        return True
+
     def drop(self) -> None:
         """
         Shift-clicks inventory slots to drop items.

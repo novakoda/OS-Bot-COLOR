@@ -64,3 +64,10 @@ ORB_RED = Color([255, 0, 0], [255, 255, 0])
 """Colors for use with menu text"""
 BANK_ORANGE = Color([255, 152, 31])
 COOK_BROWN = Color([64, 48, 32])
+
+
+"""Dark colors for tags"""
+DARK_YELLOW = Color([40, 40, 0])
+DARK_RED = Color([40, 0, 0])
+DARK_GREEN = Color([0, 40, 0])
+DARK_PINK = Color([21, 0, 19])

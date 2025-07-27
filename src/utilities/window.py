@@ -63,6 +63,8 @@ class Window:
     mouseover: Rectangle = None
     total_xp: Rectangle = None
 
+    bank_slots: List[Rectangle] = []  # List of rectangles for each bank slot
+
     def __init__(self, window_title: str, padding_top: int, padding_left: int) -> None:
         """
         Creates a Window object with various methods for interacting with the client window.
@@ -320,6 +322,33 @@ class Window:
             return True
         print("Window.__locate_minimap(): Failed to find minimap.")
         return False
+
+    def locate_bank_slots(self, client_rect: Rectangle) -> bool:
+        """
+        Locates the bank area and creates Rectangles for each bank slot, storing them in the class property.
+        Args:
+            client_rect: The client area to search in.
+        Returns:
+            True if successful, False otherwise.
+        """
+        # Find the bank area using the template
+        bank_rect = imsearch.search_img_in_rect(imsearch.BOT_IMAGES.joinpath("ui_templates", "bank.png"), client_rect)
+        if not bank_rect:
+            print("Window.__locate_bank_slots(): Failed to find bank area.")
+            return False
+        self.bank_slots = []
+        slot_w, slot_h = 33, 32  # dimensions of a bank slot
+        gap = 4  # 1px gap between slots
+        cols, rows = 8, 10
+        # The top-left of the first slot (relative to the found bank area)
+        start_x = 41 + bank_rect.left
+        start_y = 74 + bank_rect.top
+        for row in range(rows):
+            y = start_y + row * (slot_h + gap-1)
+            for col in range(cols):
+                x = start_x + col * (slot_w + gap)
+                self.bank_slots.append(Rectangle(left=x, top=y, width=slot_w, height=slot_h))
+        return True
 
 
 class MockWindow(Window):

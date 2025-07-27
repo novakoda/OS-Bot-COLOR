@@ -392,20 +392,40 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         self.deposit(skip_slots, keep_open)
         return True
 
-    def withdraw_item(self, item: str = '', keep_open: bool = False, conf: float = 0.2) -> bool:
+    def withdraw_item(self, item: Union[str, int] = '', keep_open: bool = False, conf: float = 0.2) -> bool:
         """
-        Handles finding and interacting with the bank when inventory is full.
+        Withdraws an item from the bank either by item name (image search) or by bank slot index.
+        Args:
+            item: The name of the item to withdraw (str), or the bank slot index (int).
+            keep_open: Whether to keep the bank open after withdrawing.
+            conf: Confidence for image search (if using item name).
         Returns:
-            True if banking was successful, False if bank couldn't be found
+            True if withdrawal was successful, False otherwise.
         """
-        slot = imsearch.search_img_in_rect(imsearch.BOT_IMAGES.joinpath("items", f"{item}.png"), self.win.game_view, conf)
-        if slot:
-            self.mouse.move_to(slot.random_point())
-            self.mouse.click()
+        if isinstance(item, int):
+            # Withdraw by slot index
+            if 0 <= item < len(self.win.bank_slots):
+                slot_rect = self.win.bank_slots[item]
+                self.mouse.move_to(slot_rect.random_point())
+                self.mouse.click()
+                result = True
+            else:
+                print(f"Invalid bank slot index: {item}")
+                result = False
+        else:
+            # Withdraw by item name (old behavior)
+            slot = imsearch.search_img_in_rect(imsearch.BOT_IMAGES.joinpath("items", f"{item}.png"), self.win.game_view, conf)
+            if slot:
+                self.mouse.move_to(slot.random_point())
+                self.mouse.click()
+                result = True
+            else:
+                result = False
 
         if not keep_open:
             time.sleep(1)
             pag.press("esc")
+        return result
 
     # --- Client Settings ---
     @deprecated(reason="This method is no longer needed for RuneLite games that can launch with arguments through the OSBC client.")
