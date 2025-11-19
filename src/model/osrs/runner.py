@@ -44,17 +44,17 @@ class OSRSRunner(OSRSJagexAccountBot):
     def main_loop(self):
         self.logs = 0
         failed_searches = 0
-        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross"]
+        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross", "Hurdle", "Balance"]
 
         # Main loop
         start_time = time.time()
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
-            # 3% chance to take a break between tree searches
+            # 3% chance to take a break between tag searches
             if rd.random_chance(probability=0.03) and self.take_breaks:
                 self.take_break(max_seconds=12, fancy=True)
 
-            # If our mouse isn't hovering over a tree, and we can't find another tree...
+            # If our mouse isn't hovering over a green tag, and we can't find another tag...
             print(self.mouseover_text(color=clr.OFF_GREEN))
             print(self.mouseover_text())
             if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.GREEN):
@@ -66,9 +66,25 @@ class OSRSRunner(OSRSJagexAccountBot):
                     self.__logout("No agility course found. Logging out.")
                 time.sleep(1)
                 continue
-            failed_searches = 0  # If code got here, a place was found
+            failed_searches = 0  # If code got here, a tag was found
 
-            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) or self.mouseover_text(contains=["Ladder", "Staircase"], color=clr.OFF_GREEN):
+            # If the current hovered tag doesn't have any allowed actions, move to the next nearest green tag
+            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
+                if not self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=True):
+                    continue
+                if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
+                    continue
+
+            # If the action is "Take" and there are exactly 2 green tags, move to the next nearest
+            if self.mouseover_text(contains=["Take"], color=clr.OFF_WHITE):
+                items = self.get_all_tagged_in_rect(self.win.game_view, clr.GREEN)
+                if items and len(items) == 2:
+                    if not self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=True):
+                        continue
+                    if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
+                        continue
+
+            if self.mouseover_text(contains=["Ladder", "Staircase"], color=clr.OFF_GREEN):
                 continue
             self.mouse.click()
             time.sleep(4)
