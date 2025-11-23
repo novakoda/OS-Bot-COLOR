@@ -44,7 +44,7 @@ class OSRSRunner(OSRSJagexAccountBot):
     def main_loop(self):
         self.logs = 0
         failed_searches = 0
-        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross", "Hurdle", "Balance"]
+        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross", "Hurdle", "Balance", "Swing", "Teeth"]
 
         # Main loop
         start_time = time.time()

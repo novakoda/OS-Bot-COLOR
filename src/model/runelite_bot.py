@@ -313,22 +313,134 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             self.mouse.move_to(item.random_point())
         return True
 
-    def move_mouse_to_bank(self):
+    def move_mouse_to_bank(self, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None):
         """
         Locates the nearest bank and moves the mouse to it. This code is used multiple times in this script,
         so it's been abstracted into a function.
         Args:
-            next_nearest: If True, will move the mouse to the second nearest tree. If False, will move the mouse to the
-                          nearest tree.
-            mouseSpeed: The speed at which the mouse will move to the tree. See mouse.py for options.
+            use_camera_rotation: Whether to rotate camera to search for the bank if not found on screen.
+            use_minimap: Whether to use minimap walking if bank still not found.
+            minimap_direction: Direction to walk on minimap if use_minimap is True (e.g., "north", "south", "east", "west").
         Returns:
             True if success, False otherwise.
         """
+        return self.navigate_to_tagged_object(clr.YELLOW, use_camera_rotation, use_minimap, minimap_direction)
 
-        bank = self.get_nearest_tag(clr.YELLOW)
-        if not bank:
+    def find_tagged_object_with_camera_rotation(self, color: clr.Color, max_rotations: int = 4) -> RuneLiteObject:
+        """
+        Searches for a tagged object by rotating the camera if not found on screen.
+        Args:
+            color: The color to search for.
+            max_rotations: Maximum number of 90-degree rotations to try.
+        Returns:
+            A RuneLiteObject if found, None otherwise.
+        """
+        # First try to find it on screen
+        obj = self.get_nearest_tag(color)
+        if obj:
+            return obj
+        
+        # If not found, try rotating the camera
+        rotation_angle = 90  # Rotate 90 degrees each time
+        for i in range(max_rotations):
+            self.log_msg(f"Rotating camera to search for tagged object... ({i+1}/{max_rotations})")
+            self.move_camera(horizontal=rotation_angle)
+            time.sleep(0.5)  # Wait for camera to settle
+            
+            obj = self.get_nearest_tag(color)
+            if obj:
+                return obj
+        
+        return None
+
+    def walk_to_minimap_location(self, direction: str = "north", distance: int = 50) -> bool:
+        """
+        Walks to a location by clicking on the minimap in a specific direction.
+        The compass is set to north first to ensure the minimap is properly oriented.
+        Args:
+            direction: Direction to walk ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest").
+            distance: Distance in pixels from center of minimap to click (default 50).
+        Returns:
+            True if successful, False otherwise.
+        """
+        if not self.win.minimap:
+            self.log_msg("Minimap not found. Cannot walk.")
             return False
-        self.mouse.move_to(bank.random_point(), mouseSpeed="slow", knotsCount=2)
+        
+        # Set compass to north first so minimap is properly oriented
+        self.set_compass_north()
+        time.sleep(0.3)  # Wait for compass to update
+        
+        center = self.win.minimap.get_center()
+        
+        # Calculate click position based on direction
+        direction_map = {
+            "north": (0, -distance),
+            "south": (0, distance),
+            "east": (distance, 0),
+            "west": (-distance, 0),
+            "northeast": (distance * 0.7, -distance * 0.7),
+            "northwest": (-distance * 0.7, -distance * 0.7),
+            "southeast": (distance * 0.7, distance * 0.7),
+            "southwest": (-distance * 0.7, distance * 0.7),
+        }
+        
+        if direction.lower() not in direction_map:
+            self.log_msg(f"Invalid direction: {direction}")
+            return False
+        
+        offset_x, offset_y = direction_map[direction.lower()]
+        click_point = (center.x + int(offset_x), center.y + int(offset_y))
+        
+        # Ensure click point is within minimap bounds
+        minimap_rect = self.win.minimap
+        click_point = (
+            max(minimap_rect.left, min(minimap_rect.left + minimap_rect.width, click_point[0])),
+            max(minimap_rect.top, min(minimap_rect.top + minimap_rect.height, click_point[1]))
+        )
+        
+        self.log_msg(f"Walking {direction} using minimap...")
+        self.mouse.move_to(click_point, mouseSpeed="medium", knotsCount=2)
+        self.mouse.click()
+        time.sleep(1)  # Wait for character to start walking
+        return True
+
+    def navigate_to_tagged_object(self, color: clr.Color, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None) -> bool:
+        """
+        Navigates to a tagged object that may be off-screen.
+        First tries to find it on screen, then rotates camera, and optionally uses minimap.
+        Args:
+            color: The color of the tagged object to find.
+            use_camera_rotation: Whether to rotate camera to search for the object.
+            use_minimap: Whether to use minimap walking if object still not found.
+            minimap_direction: Direction to walk on minimap if use_minimap is True.
+        Returns:
+            True if object was found and navigated to, False otherwise.
+        """
+        # First try to find it on screen
+        obj = self.get_nearest_tag(color)
+        if obj:
+            self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
+            return True
+        
+        # Try camera rotation if enabled
+        if use_camera_rotation:
+            obj = self.find_tagged_object_with_camera_rotation(color)
+            if obj:
+                self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
+                return True
+        
+        # Try minimap walking if enabled
+        if use_minimap and minimap_direction:
+            if self.walk_to_minimap_location(minimap_direction):
+                # Wait a bit and try to find the object again
+                time.sleep(4)
+                obj = self.get_nearest_tag(color)
+                if obj:
+                    self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
+                    return True
+        
+        return False
 
     def deposit(self, skip_slots: List[int] = None, keep_open: bool = False) -> None:
         """
@@ -359,23 +471,38 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if not keep_open:
             pag.press("esc")
 
-    def deposit_to_bank(self, skip_slots: List[int] = None, keep_open: bool = False) -> bool:
+    def deposit_to_bank(self, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None) -> bool:
         """
         Handles finding and interacting with the bank when inventory is full.
+        Args:
+            skip_slots: List of inventory slots to skip when depositing.
+            keep_open: Whether to keep the bank open after depositing.
+            use_camera_rotation: Whether to rotate camera to search for the bank if not found on screen.
+            use_minimap: Whether to use minimap walking if bank still not found.
+            minimap_direction: Direction to walk on minimap if use_minimap is True (e.g., "north", "south", "east", "west").
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
         print("in function depositing to bank")
         failed_searches = 0
-        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE) and not self.move_mouse_to_bank():
-            failed_searches += 1
-            if failed_searches % 10 == 0:
-                self.log_msg("Searching for bank...")
-            if failed_searches > 60:
-                # If we've been searching for a whole minute...
-                self.logout("No tagged banks found. Logging out.")
-            time.sleep(1)
-            return False
+        max_attempts = 10
+        
+        # Try to find and navigate to the bank
+        while not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
+            if not self.move_mouse_to_bank(use_camera_rotation, use_minimap, minimap_direction):
+                failed_searches += 1
+                if failed_searches % 5 == 0:
+                    self.log_msg("Searching for bank...")
+                if failed_searches > max_attempts:
+                    # If we've been searching for too long...
+                    self.log_msg("No tagged banks found after multiple attempts.")
+                    return False
+                time.sleep(1)
+            else:
+                # Found bank, check if mouseover text is correct
+                time.sleep(0.5)  # Give time for mouseover text to update
+                if self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
+                    break
 
         if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
             return False
