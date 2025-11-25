@@ -55,12 +55,19 @@ class OSRSFarmer(OSRSJagexAccountBot):
         self.log_msg("Selecting inventory...")
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
+        self.used_water = 0
 
         start_time = time.time()
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
             if rd.random_chance(probability=0.05) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
+
+            if self.used_water > 95:
+                # Refill watering cans if more than 95 waterings are done
+                green_tag = self.get_nearest_tag([clr.GREEN, clr.DARK_GREEN])
+                if green_tag:
+                    self.__refill_water(green_tag)
 
             # Planting phase
             plant_tag = self.get_nearest_tag([clr.RED, clr.DARK_RED, clr.YELLOW, clr.DARK_YELLOW])
@@ -120,6 +127,8 @@ class OSRSFarmer(OSRSJagexAccountBot):
         self.mouse.move_to(pink_tag.random_point())
         self.mouse.click()
         time.sleep(2)  # Wait for watering/harvesting animation
+        self.used_water += 1
+        print('used water: ', self.used_water)
 
     def __refill_water(self, green_tag: RuneLiteObject):
         """Refill watering cans at the red-tagged water container."""
@@ -128,7 +137,9 @@ class OSRSFarmer(OSRSJagexAccountBot):
         self.mouse.click()
         self.mouse.move_to(green_tag.random_point())
         self.mouse.click()
-        time.sleep(11)  # Wait for refill animation
+        time.sleep(17)  # Wait for refill animation
+        self.used_water = 0
+        print('used water: ', self.used_water)
 
     def __logout(self, msg):
         self.log_msg(msg)
