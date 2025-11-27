@@ -594,7 +594,8 @@ class Bot(ABC):
         Returns:
             True if exact string is found, False otherwise.
         """
-        if ocr.find_text(['Whatwouldyouliketosmelt','Howmanywouldyouliketocreate'], self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
+        print(ocr.extract_text(self.win.chat, ocr.BOLD_12, clr.COOK_BROWN))
+        if ocr.find_text(['Whatwouldyouliketosmelt','Howmanywouldyouliketo'], self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
             return True
 
     def is_ui_message_showing(self, img_name: str) -> bool:
