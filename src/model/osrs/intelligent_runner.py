@@ -7,6 +7,7 @@ Relies solely on computer vision and RuneLite plugin tags:
 import time
 from typing import TYPE_CHECKING
 
+import pyautogui as pag
 import utilities.color as clr
 import utilities.random_util as rd
 from model.osrs.intelligent_runner_agent import IntelligentRunnerAgent
@@ -46,6 +47,9 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
         self.long_travel_cooldown_until = 0.0
         self.long_travel_target_info = None
         self.long_travel_last_log = 0.0
+        # Movement detection tracking
+        self.movement_check_positions = []  # Track positions over time to detect movement
+        self.movement_stable_checks = 0  # Number of consecutive stable checks
         
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
@@ -112,6 +116,94 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
         self.log_msg(f"Player still traveling toward {action}, waiting {remaining}s before re-clicking...")
         self.long_travel_last_log = time.time()
     
+    def _is_player_or_screen_moving(self, game_state) -> bool:
+        """
+        Detect if player or screen is moving by tracking tag positions over time.
+        Returns True if movement is detected, False if stable.
+        """
+        # Get a reference position to track (prefer green tag, fallback to yellow)
+        reference_pos = None
+        if game_state.green_tag_position:
+            reference_pos = game_state.green_tag_position
+        elif game_state.has_yellow_tags:
+            # Get first yellow tag position as reference
+            yellow_objects = self.get_all_tagged_in_rect(self.win.game_view, clr.YELLOW)
+            if yellow_objects:
+                yellow_center = yellow_objects[0].center()
+                reference_pos = (yellow_center.x, yellow_center.y)
+        
+        if reference_pos is None:
+            # No tags visible - can't determine movement, assume not moving
+            self.movement_check_positions = []
+            self.movement_stable_checks = 0
+            return False
+        
+        # Add current position to tracking list
+        self.movement_check_positions.append({
+            "position": reference_pos,
+            "timestamp": time.time()
+        })
+        
+        # Keep only last 3 positions (check over ~1.5 seconds)
+        if len(self.movement_check_positions) > 3:
+            self.movement_check_positions = self.movement_check_positions[-3:]
+        
+        # Need at least 2 positions to detect movement
+        if len(self.movement_check_positions) < 2:
+            return True  # Assume moving until we have enough data
+        
+        # Check if positions are changing (indicating movement)
+        position_threshold = 5  # pixels - if position changes more than this, it's moving
+        is_moving = False
+        
+        for i in range(1, len(self.movement_check_positions)):
+            prev_pos = self.movement_check_positions[i-1]["position"]
+            curr_pos = self.movement_check_positions[i]["position"]
+            
+            distance = (
+                abs(curr_pos[0] - prev_pos[0]) +
+                abs(curr_pos[1] - prev_pos[1])
+            )
+            
+            if distance > position_threshold:
+                is_moving = True
+                self.movement_stable_checks = 0
+                break
+        
+        if not is_moving:
+            # Position is stable
+            self.movement_stable_checks += 1
+        else:
+            self.movement_stable_checks = 0
+        
+        return is_moving
+    
+    def _wait_until_still(self, game_state, max_wait_time: float = 5.0) -> bool:
+        """
+        Wait until player and screen are still before proceeding.
+        Args:
+            game_state: Current game state
+            max_wait_time: Maximum time to wait in seconds
+        Returns:
+            True if player is now still, False if timeout
+        """
+        start_wait = time.time()
+        check_interval = 0.3  # Check every 0.3 seconds
+        stable_required = 2  # Need 2 consecutive stable checks
+        
+        while time.time() - start_wait < max_wait_time:
+            current_state = self.agent.get_game_state()
+            is_moving = self._is_player_or_screen_moving(current_state)
+            
+            if not is_moving and self.movement_stable_checks >= stable_required:
+                # Player is still
+                return True
+            
+            time.sleep(check_interval)
+        
+        # Timeout - assume still after max wait time
+        return True
+    
     def main_loop(self):
         """Main loop using intelligent agent with CV-only approach"""
         # Initialize the intelligent agent
@@ -129,6 +221,8 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
         last_action_time = time.time()
         consecutive_failures = 0
         self._reset_long_travel_cooldown()
+        self.movement_check_positions = []
+        self.movement_stable_checks = 0
         
         while time.time() - start_time < end_time:
             # 3% chance to take a break between tag searches
@@ -166,6 +260,15 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
                     if yellow_obstacles:
                         obstacle = self.agent._select_closest_obstacle(yellow_obstacles)
                         if obstacle:
+                            # Check if bank is open and close it
+                            if self.is_bank_open():
+                                self.log_msg("Bank interface detected, closing it...")
+                                pag.press("esc")
+                                time.sleep(0.5)
+                                game_state = self.agent.get_game_state()
+                            # Reset movement tracking before clicking
+                            self.movement_check_positions = []
+                            self.movement_stable_checks = 0
                             self._interact_with_obstacle(
                                 obstacle,
                                 game_state,
@@ -229,6 +332,28 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
                 time.sleep(0.5)
                 continue
             
+            # Check if player/screen is moving - wait until still before clicking
+            if self._is_player_or_screen_moving(game_state):
+                if self.movement_stable_checks == 0:  # Only log once when movement starts
+                    self.log_msg("Player or screen is moving, waiting until still...")
+                if not self._wait_until_still(game_state, max_wait_time=5.0):
+                    # Still moving after timeout, but proceed anyway
+                    self.log_msg("Movement timeout, proceeding with caution...")
+                # Re-get game state after waiting
+                game_state = self.agent.get_game_state()
+            
+            # Reset movement tracking before clicking (start fresh for next cycle)
+            self.movement_check_positions = []
+            self.movement_stable_checks = 0
+            
+            # Check if bank is open and close it if so
+            if self.is_bank_open():
+                self.log_msg("Bank interface detected, closing it...")
+                pag.press("esc")
+                time.sleep(0.5)  # Wait for bank to close
+                # Re-get game state after closing bank
+                game_state = self.agent.get_game_state()
+            
             # Interact with the selected obstacle
             is_long_travel = self._is_long_travel_obstacle(selected_obstacle)
             if is_long_travel and self._is_in_long_travel_cooldown():
@@ -250,6 +375,9 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
             if success:
                 consecutive_failures = 0
                 last_action_time = time.time()
+                # Reset movement tracking after successful click (we expect movement now)
+                self.movement_check_positions = []
+                self.movement_stable_checks = 0
             else:
                 consecutive_failures += 1
                 
@@ -267,6 +395,15 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
                     if consecutive_failures == 1:
                         self.log_msg("Retrying same green object (click may not have registered)...")
                         time.sleep(1)
+                        # Check if bank is open and close it
+                        if self.is_bank_open():
+                            self.log_msg("Bank interface detected, closing it...")
+                            pag.press("esc")
+                            time.sleep(0.5)
+                            game_state = self.agent.get_game_state()
+                        # Reset movement tracking before retry click
+                        self.movement_check_positions = []
+                        self.movement_stable_checks = 0
                         retry_success = self._interact_with_obstacle(
                             selected_obstacle,
                             game_state,
@@ -291,6 +428,15 @@ class OSRSIntelligentRunner(OSRSJagexAccountBot):
                             yellow_obstacle = self.agent._select_closest_obstacle(yellow_obstacles, exclude_recent=True)
                             if yellow_obstacle:
                                 self.log_msg(f"Trying yellow tag: {yellow_obstacle.action}")
+                                # Check if bank is open and close it
+                                if self.is_bank_open():
+                                    self.log_msg("Bank interface detected, closing it...")
+                                    pag.press("esc")
+                                    time.sleep(0.5)
+                                    game_state = self.agent.get_game_state()
+                                # Reset movement tracking before clicking
+                                self.movement_check_positions = []
+                                self.movement_stable_checks = 0
                                 success = self._interact_with_obstacle(
                                     yellow_obstacle,
                                     game_state,
