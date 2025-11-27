@@ -310,7 +310,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if next_nearest:
             self.mouse.move_to(item.random_point(), mouseSpeed=speed, knotsCount=2)
         else:
-            self.mouse.move_to(item.random_point())
+            self.mouse.move_to(item.random_point(), mouseSpeed=speed)
         return True
 
     def move_mouse_to_bank(self):

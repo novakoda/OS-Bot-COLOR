@@ -44,7 +44,7 @@ class OSRSRunner(OSRSJagexAccountBot):
     def main_loop(self):
         self.logs = 0
         failed_searches = 0
-        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross", "Hurdle", "Balance"]
+        actions = ["Jump", "Climb", "Take", "Vault", "Cross", "Grab", "Leap", "Cross", "Hurdle", "Balance", "Swing", "Teeth"]
 
         # Main loop
         start_time = time.time()
@@ -57,7 +57,7 @@ class OSRSRunner(OSRSJagexAccountBot):
             # If our mouse isn't hovering over a green tag, and we can't find another tag...
             print(self.mouseover_text(color=clr.OFF_GREEN))
             print(self.mouseover_text())
-            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.GREEN):
+            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.GREEN, speed="fast"):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for agility course...")
