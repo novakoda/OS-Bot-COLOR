@@ -313,7 +313,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             self.mouse.move_to(item.random_point(), mouseSpeed=speed)
         return True
 
-    def move_mouse_to_bank(self, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None):
+    def move_mouse_to_bank(self, color: clr.Color, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None):
         """
         Locates the nearest bank and moves the mouse to it. This code is used multiple times in this script,
         so it's been abstracted into a function.
@@ -324,7 +324,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         Returns:
             True if success, False otherwise.
         """
-        return self.navigate_to_tagged_object(clr.YELLOW, use_camera_rotation, use_minimap, minimap_direction)
+        return self.navigate_to_tagged_object(color, use_camera_rotation, use_minimap, minimap_direction)
 
     def find_tagged_object_with_camera_rotation(self, color: clr.Color, max_rotations: int = 4) -> RuneLiteObject:
         """
@@ -471,7 +471,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if not keep_open:
             pag.press("esc")
 
-    def deposit_to_bank(self, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None) -> bool:
+    def deposit_to_bank(self, color=clr.YELLOW, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None) -> bool:
         """
         Handles finding and interacting with the bank when inventory is full.
         Args:
@@ -486,10 +486,11 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         print("in function depositing to bank")
         failed_searches = 0
         max_attempts = 10
+        bank_text = ["Bank", "Use"]
         
         # Try to find and navigate to the bank
-        while not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
-            if not self.move_mouse_to_bank(use_camera_rotation, use_minimap, minimap_direction):
+        while not self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
+            if not self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
                 failed_searches += 1
                 if failed_searches % 5 == 0:
                     self.log_msg("Searching for bank...")
@@ -501,10 +502,10 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             else:
                 # Found bank, check if mouseover text is correct
                 time.sleep(0.5)  # Give time for mouseover text to update
-                if self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
+                if self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
                     break
 
-        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
+        if not self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
             return False
 
         self.mouse.click()
