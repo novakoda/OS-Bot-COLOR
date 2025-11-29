@@ -570,7 +570,7 @@ class Bot(ABC):
         Returns:
             True if exact string is found, False otherwise.
         """
-        if ocr.find_text(['TheBankofGielinor', 'Tab7'], self.win.game_view, ocr.BOLD_12, clr.BANK_ORANGE):
+        if ocr.find_text(['TheBankofGielinor', 'Tab1', 'Tab2', 'Tab3', 'Tab4', 'Tab5', 'Tab6', 'Tab7'], self.win.game_view, ocr.BOLD_12, clr.BANK_ORANGE):
             return True
 
     def is_cook_menu_open(self) -> bool:

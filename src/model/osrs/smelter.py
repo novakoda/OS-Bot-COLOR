@@ -17,7 +17,10 @@ class OSRSSmelter(OSRSJagexAccountBot):
     def __init__(self):
         bot_title = "Smelter"
         description = (
-            "This bot smelts ore"
+            "This bot smelts ore\n"
+            "Tag the furnace PINK\n"
+            "Tag the bank chest YELLOW\n"
+            "Mark the iron ore RED (255, 0, 0) using bank highlighter plugin"
         )
         super().__init__(bot_title=bot_title, description=description, debug=False)
         self.running_time = 1
@@ -62,7 +65,7 @@ class OSRSSmelter(OSRSJagexAccountBot):
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
             if self.ore_type == "Iron":
-                if not self.__smelt_ore("2", "Iron_ore2"):
+                if not self.__smelt_ore(ore="Iron_ore2"):
                     continue
 
                 # Wait until no more iron ore
@@ -70,10 +73,10 @@ class OSRSSmelter(OSRSJagexAccountBot):
                     time.sleep(1)
 
                 # Bank items
-                if not self.deposit_to_bank():
+                if not self.deposit_to_bank(keep_open=True):
                     continue
 
-                self.withdraw_item("Iron_ore", conf=0.14)
+                self.withdraw_item(clr.RED)
 
             elif self.ore_type == "Silver":
                 # Verify inventory has tiara mould

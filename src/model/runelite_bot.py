@@ -524,7 +524,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         """
         Withdraws an item from the bank either by item name (image search) or by bank slot index.
         Args:
-            item: The name of the item to withdraw (str), or the bank slot index (int).
+            item: The name of the item to withdraw (str), the bank slot index (int), or a color tag (clr.Color).
             keep_open: Whether to keep the bank open after withdrawing.
             conf: Confidence for image search (if using item name).
         Returns:
@@ -539,6 +539,34 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
                 result = True
             else:
                 print(f"Invalid bank slot index: {item}")
+                result = False
+        elif isinstance(item, clr.Color):
+            # Withdraw by color tag - search through bank slots for items marked with the specified color
+            # Ensure bank is open and slots are located
+            if not self.is_bank_open():
+                self.log_msg("Bank is not open. Cannot withdraw item.")
+                return False
+            
+            if not self.win.bank_slots:
+                # Try to locate bank slots if not already located
+                if not self.win.locate_bank_slots(self.win.rectangle()):
+                    self.log_msg("Could not locate bank slots.")
+                    return False
+            
+            found_slot = None
+            for slot_rect in self.win.bank_slots:
+                # Check if this bank slot contains an item marked with the specified color
+                tagged_items = self.get_all_tagged_in_rect(slot_rect, item)
+                if tagged_items:
+                    found_slot = slot_rect
+                    break
+            
+            if found_slot:
+                self.mouse.move_to(found_slot.random_point())
+                self.mouse.click()
+                result = True
+            else:
+                self.log_msg(f"No item marked with the specified color found in bank.")
                 result = False
         else:
             # Withdraw by item name (old behavior)
