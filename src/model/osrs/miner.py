@@ -15,8 +15,9 @@ class OSRSMiner(OSRSJagexAccountBot):
             "Tag ore veins PINK.\n"
             "For Motherlode Mine: tag the Hopper RED.\n"
             "Tag the Sack GREEN.\n"
-            "Tag the Bank Chest BLUE.\n"
-            "For upper level: Mark top of ladder cyan (0, 255, 255)\n"
+            "Tag the Bank Chest BLUE.\n\n"
+            "For upper level: Start on upper level with an empty sack ;)\n"
+            "Mark top of ladder cyan (0, 255, 255)\n"
             "and bottom of ladder purple (170, 0, 255)"
         )
         super().__init__(bot_title=bot_title, description=description, debug=False)
