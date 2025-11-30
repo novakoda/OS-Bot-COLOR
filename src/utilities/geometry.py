@@ -170,6 +170,60 @@ class Rectangle:
     def __repr__(self):
         return self.__str__()
 
+    def show_debug(self, show_center: bool = True, padding: int = 50, color: tuple = (0, 255, 0), thickness: int = 2):
+        """
+        Displays the rectangle on screen for debugging purposes.
+        Takes a screenshot of the area (with optional padding for context) and draws the rectangle border.
+        Args:
+            show_center: If True, draws a circle at the center point of the rectangle.
+            padding: The amount of padding (in pixels) to add around the rectangle for context.
+            color: The color of the rectangle border in BGR format (default: green).
+            thickness: The thickness of the rectangle border in pixels.
+        """
+        # Calculate the area to screenshot (with padding)
+        screenshot_left = max(0, self.left - padding)
+        screenshot_top = max(0, self.top - padding)
+        screenshot_width = self.width + (2 * padding)
+        screenshot_height = self.height + (2 * padding)
+        
+        # Take screenshot of the padded area
+        global sct
+        monitor = {
+            "left": screenshot_left,
+            "top": screenshot_top,
+            "width": screenshot_width,
+            "height": screenshot_height,
+        }
+        # Convert to contiguous array for OpenCV compatibility
+        image = np.ascontiguousarray(np.array(sct.grab(monitor))[:, :, :3])
+        
+        # Calculate rectangle coordinates relative to the screenshot
+        rect_x = self.left - screenshot_left
+        rect_y = self.top - screenshot_top
+        
+        # Draw the rectangle border
+        cv2.rectangle(
+            image,
+            (rect_x, rect_y),
+            (rect_x + self.width, rect_y + self.height),
+            color,
+            thickness
+        )
+        
+        # Draw center point if requested
+        if show_center:
+            center = self.get_center()
+            center_x = center.x - screenshot_left
+            center_y = center.y - screenshot_top
+            cv2.circle(image, (center_x, center_y), 5, color, -1)
+        
+        # Display the image
+        window_name = f"Rectangle Debug: {self.__str__()}"
+        cv2.imshow(window_name, image)
+        print(f"Debug window opened. Press any key to close.")
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 
 class RuneLiteObject:
     rect = None

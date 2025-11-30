@@ -36,7 +36,7 @@ def __imagesearcharea(template: Union[cv2.Mat, str, Path], im: cv2.Mat, confiden
     correlation = cv2.matchTemplate(im, base, cv2.TM_SQDIFF_NORMED, mask=alpha)
     min_val, _, min_loc, _ = cv2.minMaxLoc(correlation)
     if min_val < confidence:
-        print('found match under conf ', min_val, confidence)
+        # print('found match under conf ', min_val, confidence)
         return Rectangle.from_points(Point(min_loc[0], min_loc[1]), Point(min_loc[0] + ww, min_loc[1] + hh))
     return None
 
@@ -66,7 +66,6 @@ def search_img_in_rect(image: Union[cv2.Mat, str, Path], rect: Union[Rectangle, 
     elif isinstance(image, Path):
         image = cv2.imread(str(image), cv2.IMREAD_UNCHANGED)
     im = rect.screenshot() if isinstance(rect, Rectangle) else rect
-
     if found_rect := __imagesearcharea(image, im, confidence):
         if isinstance(rect, Rectangle):
             found_rect.left += rect.left

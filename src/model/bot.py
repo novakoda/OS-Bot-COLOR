@@ -522,6 +522,28 @@ class Bot(ABC):
             return ocr.extract_text(self.win.mouseover, ocr.BOLD_12, color)
         return bool(ocr.find_text(contains, self.win.mouseover, ocr.BOLD_12, color))
 
+    def info_panel_text(self, contains: Union[str, List[str]] = None, font: ocr = ocr.PLAIN_11, color: Union[clr.Color, List[clr.Color]] = None) -> Union[bool, str]:
+        """
+        Examines the info panel for text.
+        Args:
+            contains: The text to search for (single word, phrase, or list of words). Case sensitive. If left blank,
+                      returns all text in the info panel.
+            color: The color(s) to isolate. If left blank, isolates all expected colors. Consider using
+                   clr.OFF_* colors for best results.
+        """
+        if color is None:
+            color = [
+                clr.OFF_CYAN,
+                clr.OFF_GREEN,
+                clr.OFF_ORANGE,
+                clr.OFF_WHITE,
+                clr.OFF_YELLOW,
+            ]
+        # self.win.info_panel.show_debug()
+        if contains is None:
+            return ocr.extract_text(self.win.info_panel, font, color)
+        return bool(ocr.find_text(contains, self.win.info_panel, font, color))
+
     def chatbox_text(self, contains: str = None, font: ocr = ocr.PLAIN_12, color: clr = clr.BLACK) -> Union[bool, str]:
         """
         Examines the chatbox for text. Currently only captures player chat text.
