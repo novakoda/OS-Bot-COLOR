@@ -15,7 +15,9 @@ class OSRSMiner(OSRSJagexAccountBot):
             "Tag ore veins PINK.\n"
             "For Motherlode Mine: tag the Hopper RED.\n"
             "Tag the Sack GREEN.\n"
-            "Tag the Bank Chest BLUE."
+            "Tag the Bank Chest BLUE.\n"
+            "For upper level: Mark top of ladder cyan (0, 255, 255)\n"
+            "and bottom of ladder purple (170, 0, 255)"
         )
         super().__init__(bot_title=bot_title, description=description, debug=False)
 
@@ -27,12 +29,16 @@ class OSRSMiner(OSRSJagexAccountBot):
         self.collect_from_sack = True
         self.ore_action = "Deposit pay-dirt to hopper"
         self.ore_type = "Paydirt"
+        self.upper_level = True
         self._paydirt_item_name = "Pay_dirt"
+        self.on_upper_level = True
+        self.hopper_deposits = 0
 
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
         self.options_builder.add_checkbox_option("collect_from_sack", "Collect from sack?", [" "])
+        self.options_builder.add_checkbox_option("upper_level", "Upper level?", [" "])
         self.options_builder.add_dropdown_option(
             "ore_action", "When inventory full:",
             ["Drop ore", "Deposit ore to bank", "Deposit pay-dirt to hopper"]
@@ -54,6 +60,8 @@ class OSRSMiner(OSRSJagexAccountBot):
                 self.take_breaks = options[option] != []
             elif option == "collect_from_sack":
                 self.collect_from_sack = options[option] != []
+            elif option == "upper_level":
+                self.upper_level = options[option] != []
             elif option == "ore_action":
                 self.ore_action = options[option]
             elif option == "ore_type":
@@ -78,6 +86,7 @@ class OSRSMiner(OSRSJagexAccountBot):
         failed_searches = 0
 
         while time.time() - start_time < end_time:
+            print('info panel text: ', self.info_panel_text(color=clr.OFF_WHITE))
             if rd.random_chance(0.04) and self.take_breaks:
                 self.take_break(max_seconds=45, fancy=True)
 
@@ -88,10 +97,18 @@ class OSRSMiner(OSRSJagexAccountBot):
                 continue
 
             print('not full inventory')
+            print('hopper deposits: ', self.hopper_deposits)
+            print('should collect: ', self.collect_from_sack and self.hopper_deposits == 4)
 
-            if self.collect_from_sack:
+            if self.collect_from_sack and self.hopper_deposits == 4:
                 print('collecting from sack')
                 self.__collect_from_sack_loop()
+
+            print('in main loop, on upper level: ', self.on_upper_level)
+            if self.upper_level and not self.on_upper_level:
+                self.__climb_ladder(color=clr.PURPLE)
+                self.hopper_deposits = 0
+                continue
 
             # ================== FIND ORE VEIN (PINK) ==================
             if not (
@@ -191,6 +208,11 @@ class OSRSMiner(OSRSJagexAccountBot):
                 # No green tag, sack is empty
                 print('sack is empty')
                 break
+
+            print('in collect from sack loop, on upper level: ', self.on_upper_level)
+            if self.upper_level and self.on_upper_level:
+                self.__climb_ladder()
+                continue
             
             # Collect from sack
             if not self.__collect_from_sack():
@@ -237,12 +259,13 @@ class OSRSMiner(OSRSJagexAccountBot):
         time.sleep(2)  # Small delay after deposit completes
         # After depositing to hopper, collect from sack if enabled
         print(f'checking collect_from_sack: {self.collect_from_sack}')
-        if self.collect_from_sack:
+        if self.collect_from_sack and self.hopper_deposits == 4:
             print('collecting from sack')
             self.__collect_from_sack_loop()
         else:
             print('collect_from_sack is False, skipping')
         print('returning True from __deposit_to_hopper')
+        self.hopper_deposits += 1
         return True
 
     # ===================================================================
@@ -306,6 +329,24 @@ class OSRSMiner(OSRSJagexAccountBot):
         except Exception:
             pass
         time.sleep(0.5)
+        return True
+
+    def __climb_ladder(self, color: clr.Color = clr.CYAN):
+        if not self.upper_level:
+            print("color purple")
+            color = clr.PURPLE
+        ladder = self.get_nearest_tag(color)
+        if not ladder:
+            print('ladder not found')
+            return False
+        self.mouse.move_to(ladder.random_point(), mouseSpeed="fast")
+        time.sleep(0.8) # wait for mouseover text
+        if not self.mouseover_text(contains="Climb", color=clr.OFF_WHITE):
+            print('no climb text found')
+            return False
+        self.mouse.click()
+        time.sleep(5)
+        self.on_upper_level = not self.on_upper_level
         return True
 
     # ===================================================================
