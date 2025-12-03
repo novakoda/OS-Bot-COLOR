@@ -278,6 +278,22 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         return empty_slots == 0
 
+    def is_inventory_empty(self, skip_slots: List[int] = None) -> bool:
+        """
+        Checks if the inventory is full by searching for empty slots.
+        Returns:
+            True if inventory is full (28/28 slots occupied), False otherwise.
+        """
+        empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
+        empty_slots = 0
+
+        # Check each inventory slot
+        for slot in self.win.inventory_slots:
+            if imsearch.search_img_in_rect(empty_img, slot, confidence=0.05):
+                empty_slots += 1
+
+        return empty_slots == len(self.win.inventory_slots) - len(skip_slots)
+
     def move_mouse_to_nearest_item(self, search_item: Union[str, clr.Color], next_nearest=False, speed="slow"):
         """
         Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
@@ -339,18 +355,18 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         obj = self.get_nearest_tag(color)
         if obj:
             return obj
-        
+
         # If not found, try rotating the camera
         rotation_angle = 90  # Rotate 90 degrees each time
         for i in range(max_rotations):
             self.log_msg(f"Rotating camera to search for tagged object... ({i+1}/{max_rotations})")
             self.move_camera(horizontal=rotation_angle)
             time.sleep(0.5)  # Wait for camera to settle
-            
+
             obj = self.get_nearest_tag(color)
             if obj:
                 return obj
-        
+
         return None
 
     def walk_to_minimap_location(self, direction: str = "north", distance: int = 50) -> bool:
@@ -366,13 +382,13 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if not self.win.minimap:
             self.log_msg("Minimap not found. Cannot walk.")
             return False
-        
+
         # Set compass to north first so minimap is properly oriented
         self.set_compass_north()
         time.sleep(0.3)  # Wait for compass to update
-        
+
         center = self.win.minimap.get_center()
-        
+
         # Calculate click position based on direction
         direction_map = {
             "north": (0, -distance),
@@ -384,21 +400,21 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             "southeast": (distance * 0.7, distance * 0.7),
             "southwest": (-distance * 0.7, distance * 0.7),
         }
-        
+
         if direction.lower() not in direction_map:
             self.log_msg(f"Invalid direction: {direction}")
             return False
-        
+
         offset_x, offset_y = direction_map[direction.lower()]
         click_point = (center.x + int(offset_x), center.y + int(offset_y))
-        
+
         # Ensure click point is within minimap bounds
         minimap_rect = self.win.minimap
         click_point = (
             max(minimap_rect.left, min(minimap_rect.left + minimap_rect.width, click_point[0])),
             max(minimap_rect.top, min(minimap_rect.top + minimap_rect.height, click_point[1]))
         )
-        
+
         self.log_msg(f"Walking {direction} using minimap...")
         self.mouse.move_to(click_point, mouseSpeed="medium", knotsCount=2)
         self.mouse.click()
@@ -422,14 +438,14 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if obj:
             self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
             return True
-        
+
         # Try camera rotation if enabled
         if use_camera_rotation:
             obj = self.find_tagged_object_with_camera_rotation(color)
             if obj:
                 self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
                 return True
-        
+
         # Try minimap walking if enabled
         if use_minimap and minimap_direction:
             if self.walk_to_minimap_location(minimap_direction):
@@ -439,7 +455,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
                 if obj:
                     self.mouse.move_to(obj.random_point(), mouseSpeed="slow", knotsCount=2)
                     return True
-        
+
         return False
 
     def deposit(self, skip_slots: List[int] = None, keep_open: bool = False) -> None:
@@ -487,7 +503,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         failed_searches = 0
         max_attempts = 10
         bank_text = ["Bank", "Use"]
-        
+
         # Try to find and navigate to the bank
         while not self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
             if not self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
@@ -546,13 +562,13 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             if not self.is_bank_open():
                 self.log_msg("Bank is not open. Cannot withdraw item.")
                 return False
-            
+
             if not self.win.bank_slots:
                 # Try to locate bank slots if not already located
                 if not self.win.locate_bank_slots(self.win.rectangle()):
                     self.log_msg("Could not locate bank slots.")
                     return False
-            
+
             found_slot = None
             for slot_rect in self.win.bank_slots:
                 # Check if this bank slot contains an item marked with the specified color
@@ -560,7 +576,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
                 if tagged_items:
                     found_slot = slot_rect
                     break
-            
+
             if found_slot:
                 self.mouse.move_to(found_slot.random_point())
                 self.mouse.click()
