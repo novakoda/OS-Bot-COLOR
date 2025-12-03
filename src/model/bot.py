@@ -232,12 +232,14 @@ class Bot(ABC):
         """
         self.controller.clear_log()
 
-    def get_item_slot(self, item: str = '', conf: float = 0.2) -> None:
+    def get_item_slot(self, item: str = '', conf: float = 0.2) -> int:
         """
-        Shift-clicks all items in the inventory to drop them.
+        Finds the slot index of an item in the inventory by item name (image search).
         Args:
-            skip_rows: The number of rows to skip before dropping.
-            skip_slots: The indices of slots to avoid dropping.
+            item: The name of the item to find.
+            conf: Confidence for image search.
+        Returns:
+            The slot index (0-27) if found, -1 otherwise.
         """
         img = imsearch.BOT_IMAGES.joinpath("items", f"{item}.png")
         print('searching for ', img)

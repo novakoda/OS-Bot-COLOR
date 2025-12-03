@@ -30,7 +30,7 @@ class OSRSSmelter(OSRSJagexAccountBot):
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 5, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
-        self.options_builder.add_dropdown_option("ore_type", "Ore Type:", ["Silver", "Iron", "Gold Bar"])
+        self.options_builder.add_dropdown_option("ore_type", "Ore Type:", ["Silver", "Iron", "Gold Bar", "Steel"])
 
     def save_options(self, options: dict):
         for option in options:
@@ -76,6 +76,32 @@ class OSRSSmelter(OSRSJagexAccountBot):
                 if not self.deposit_to_bank(keep_open=True):
                     continue
 
+                self.withdraw_item(clr.RED)
+            
+            elif self.ore_type == "Steel":
+                if not self.__smelt_ore(ore="Iron_ore2", key="2"):
+                    continue
+
+                # Wait until no more iron ore
+                while self.get_item_slot("Iron_ore2") != -1:
+                    time.sleep(1)
+
+                # Bank items
+                if not self.deposit_to_bank(keep_open=True):
+                    continue
+
+                # Withdraw coal and verify it's in inventory
+                if not self.withdraw_item(clr.BLUE, keep_open=True):
+                    continue
+                print("clicked blue tag once")
+                self.mouse.click()
+                print("clicked blue tag twice")
+                time.sleep(0.5)  # Brief wait for item to appear in inventory
+                if self.get_item_slot(clr.BLUE) == -1:
+                    self.log_msg("Coal not found in inventory after withdrawal, retrying...")
+                    pag.press("esc")
+                    continue
+                print("clicking red tag")
                 self.withdraw_item(clr.RED)
 
             elif self.ore_type == "Silver":
