@@ -278,6 +278,26 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         return empty_slots == 0
 
+    def get_item_slot(self, item: Union[str, clr.Color] = '', conf: float = 0.2) -> int:
+        """
+        Finds the slot index of an item in the inventory by item name (image search) or color tag.
+        Args:
+            item: The name of the item to find (str) or a color tag (clr.Color).
+            conf: Confidence for image search (if using item name).
+        Returns:
+            The slot index (0-27) if found, -1 otherwise.
+        """
+        if isinstance(item, clr.Color):
+            # Search by color tag
+            for i, slot in enumerate(self.win.inventory_slots):
+                tagged_items = self.get_all_tagged_in_rect(slot, item)
+                if tagged_items:
+                    return i
+            return -1
+        else:
+            # Search by item name (image search) - call parent implementation
+            return super().get_item_slot(item, conf)
+
     def move_mouse_to_nearest_item(self, search_item: Union[str, clr.Color], next_nearest=False, speed="slow"):
         """
         Locates the nearest tree and moves the mouse to it. This code is used multiple times in this script,
