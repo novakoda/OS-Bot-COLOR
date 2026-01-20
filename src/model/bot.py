@@ -606,7 +606,7 @@ class Bot(ABC):
         Returns:
             True if exact string is found, False otherwise.
         """
-        if ocr.find_text('Whatwouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN) or ocr.find_text('Howmanywouldyouliketocook', self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
+        if ocr.find_text(['Whatwouldyouliketocook','Howmanywouldyouliketocook'], self.win.chat, ocr.BOLD_12, clr.COOK_BROWN):
             return True
 
     def is_smelt_menu_open(self) -> bool:
