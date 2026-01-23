@@ -49,6 +49,8 @@ PURPLE = Color([170, 0, 255])
 RED = Color([255, 0, 0])
 WHITE = Color([255, 255, 255])
 YELLOW = Color([255, 255, 0])
+LIME_GREEN = Color([20, 140, 20], [100, 255, 100])  # For gemstone crab tags
+
 
 """Colors for use with semi-transparent text"""
 OFF_CYAN = Color([0, 200, 200], [70, 255, 255])
