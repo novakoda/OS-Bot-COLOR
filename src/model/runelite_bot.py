@@ -507,7 +507,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         if not keep_open:
             pag.press("esc")
 
-    def deposit_to_bank(self, color=clr.YELLOW, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None) -> bool:
+    def deposit_to_bank(self, color=clr.YELLOW, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None, bank_open_timeout: int = 20) -> bool:
         """
         Handles finding and interacting with the bank when inventory is full.
         Args:
@@ -516,6 +516,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             use_camera_rotation: Whether to rotate camera to search for the bank if not found on screen.
             use_minimap: Whether to use minimap walking if bank still not found.
             minimap_direction: Direction to walk on minimap if use_minimap is True (e.g., "north", "south", "east", "west").
+            bank_open_timeout: Seconds to wait for the bank to open before re-clicking the tag.
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
@@ -547,8 +548,22 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         self.mouse.click()
         self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="slow", knotsCount=2)
 
+        last_click_time = time.time()
         while not self.is_bank_open():
             print("waiting for bank to open")
+            if time.time() - last_click_time >= bank_open_timeout:
+                print("bank not open yet; re-clicking tag")
+                if self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
+                    time.sleep(0.5)  # Give time for mouseover text to update
+                    if self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
+                        self.mouse.click()
+                        last_click_time = time.time()
+                    else:
+                        # Mouseover text not correct, reset timer to try again
+                        last_click_time = time.time()
+                else:
+                    # Couldn't find bank, reset timer to try again
+                    last_click_time = time.time()
             time.sleep(1)
 
         print('depositing')

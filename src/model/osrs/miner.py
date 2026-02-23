@@ -32,8 +32,6 @@ class OSRSMiner(OSRSJagexAccountBot):
         self.ore_type = "Paydirt"
         self.upper_level = True
         self._paydirt_item_name = "Pay_dirt"
-        self.on_upper_level = True
-        self.hopper_deposits = 0
 
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
@@ -78,6 +76,8 @@ class OSRSMiner(OSRSJagexAccountBot):
     #                           MAIN LOOP
     # ===================================================================
     def main_loop(self):
+        self.on_upper_level = True
+        self.hopper_deposits = 0
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
         time.sleep(1.0)
@@ -165,7 +165,6 @@ class OSRSMiner(OSRSJagexAccountBot):
             if self.__deposit_to_hopper():
                 # After depositing to hopper, collect from sack if enabled
                 print('deposited to hopper')
-                
             else:
                 time.sleep(3)
             return
@@ -214,19 +213,19 @@ class OSRSMiner(OSRSJagexAccountBot):
             if self.upper_level and self.on_upper_level:
                 self.__climb_ladder()
                 continue
-            
+
             # Collect from sack
             if not self.__collect_from_sack():
                 # Failed to collect, break to avoid infinite loop
                 print('failed to collect from sack')
                 break
-            
+
             # Deposit to bank
             if not self.deposit_to_bank(color=clr.BLUE):
                 # Failed to deposit, break to avoid infinite loop
                 print('failed to deposit to bank')
                 break
-            
+
             # Small delay before checking sack again
             time.sleep(1.0)
 

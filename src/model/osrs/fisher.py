@@ -200,7 +200,7 @@ class OSRSFisher(OSRSJagexAccountBot):
         """
         if not direction:
             return None
-        
+
         opposite_map = {
             "north": "south",
             "south": "north",
@@ -211,7 +211,7 @@ class OSRSFisher(OSRSJagexAccountBot):
             "southeast": "northwest",
             "southwest": "northeast",
         }
-        
+
         return opposite_map.get(direction.lower())
 
     def __cook_fish(self):
@@ -241,8 +241,8 @@ class OSRSFisher(OSRSJagexAccountBot):
         secs = 0
         while not self.is_cook_menu_open():
             secs += 1
-            if secs > 29:
-                # If we've been searching for 30 seconds...
+            if secs > 19:
+                # If we've been searching for 20 seconds...
                 return True
             time.sleep(1)
 
@@ -254,7 +254,9 @@ class OSRSFisher(OSRSJagexAccountBot):
         while not self.idle_message('NOTcooking'):
                 return False
 
-        self.__cook_fish()
+        if self.fish_type == "Raw_salmon":
+            self.__cook_fish()
+
         return True
 
     def __cook_and_deposit(self) -> bool:
@@ -267,21 +269,21 @@ class OSRSFisher(OSRSJagexAccountBot):
         # Cook fish at yellow tagged location
         if not self.__cook_fish():
             return False
-        
+
         # Wait for cooking to complete
         while self.active_message("Cooking"):
             time.sleep(1)
-        
+
         # Drop all burnt fish (Burnt_lobster for lobsters, Burnt_salmon for salmon)
         burnt_item = "Burnt_lobster" if self.fish_type == "Raw_lobster" else "Burnt_salmon"
         burnt_slots = []
-        
+
         # Find all slots containing burnt items
         img = imsearch.BOT_IMAGES.joinpath("items", f"{burnt_item}.png")
         for i, slot in enumerate(self.win.inventory_slots):
             if imsearch.search_img_in_rect(img, slot, confidence=0.2):
                 burnt_slots.append(i)
-        
+
         # Drop all burnt items
         if burnt_slots:
             self.log_msg(f"Dropping {len(burnt_slots)} {burnt_item}(s)...")
@@ -290,11 +292,11 @@ class OSRSFisher(OSRSJagexAccountBot):
                 self.click_inventory_slot(slot, wait=0.1)
             pag.keyUp("shift")
             time.sleep(0.5)
-        
+
         # Deposit to bank (blue tag)
         if not self.deposit_to_bank(color=clr.BLUE, skip_slots=self.skip_slots, minimap_direction=self.bank_minimap_direction):
             return False
-        
+
         # Return to fishing location using opposite direction
         if self.bank_minimap_direction:
             opposite_direction = self.__get_opposite_direction(self.bank_minimap_direction)
@@ -302,7 +304,7 @@ class OSRSFisher(OSRSJagexAccountBot):
                 self.log_msg(f"Returning to fishing location ({opposite_direction})...")
                 self.walk_to_minimap_location(direction=opposite_direction)
                 time.sleep(2)  # Wait for character to walk back
-        
+
         return True
 
     def __deposit_to_bank(self) -> bool:
