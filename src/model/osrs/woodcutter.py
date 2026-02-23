@@ -19,11 +19,16 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         super().__init__(bot_title=bot_title, description=description, debug=False)
         self.running_time = 1
         self.take_breaks = False
+        self.bank_minimap_direction = None
 
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
         self.options_builder.add_dropdown_option("log_action", "When full inventory:", ["Deposit logs in bank", "Light logs on fire", "Drop logs"])
+        self.options_builder.add_dropdown_option(
+            "bank_minimap_direction", "Bank direction (if off-screen):",
+            ["None", "North", "South", "East", "West", "Northeast", "Northwest", "Southeast", "Southwest"]
+        )
 
     def save_options(self, options: dict):
         for option in options:
@@ -33,6 +38,8 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
                 self.take_breaks = options[option] != []
             elif option == "log_action":
                 self.log_action = options[option]
+            elif option == "bank_minimap_direction":
+                self.bank_minimap_direction = None if options[option] == "None" else options[option].lower()
             else:
                 self.log_msg(f"Unknown option: {option}")
                 print("Developer: ensure that the option keys are correct, and that options are being unpacked correctly.")
@@ -151,31 +158,60 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
             self.set_fires(tinderbox_slot)
             time.sleep(1)
 
+    def __get_opposite_direction(self, direction: str) -> str:
+        """
+        Returns the opposite direction for minimap navigation.
+        Args:
+            direction: The original direction (e.g., "north", "south", etc.)
+        Returns:
+            The opposite direction string, or None if direction is None
+        """
+        if not direction:
+            return None
+        
+        opposite_map = {
+            "north": "south",
+            "south": "north",
+            "east": "west",
+            "west": "east",
+            "northeast": "southwest",
+            "northwest": "southeast",
+            "southeast": "northwest",
+            "southwest": "northeast",
+        }
+        
+        return opposite_map.get(direction.lower())
+
     def __deposit_to_bank(self) -> bool:
         """
         Handles finding and interacting with the bank when inventory is full.
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
-        failed_searches = 0
-        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE) and not self.__move_mouse_to_bank():
-            failed_searches += 1
-            if failed_searches % 10 == 0:
-                self.log_msg("Searching for bank...")
-            if failed_searches > 60:
-                # If we've been searching for a whole minute...
-                self.__logout("No tagged banks found. Logging out.")
-            time.sleep(1)
+        if not self.deposit_to_bank(color=clr.YELLOW, minimap_direction=self.bank_minimap_direction):
             return False
-
-        if not self.mouseover_text(contains="Bank", color=clr.OFF_WHITE):
-            return False
-
-        self.mouse.click()
-        self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="slow", knotsCount=2)
-
-        while not self.is_bank_open():
-            time.sleep(1)
-
-        self.deposit()
+        
+        # Return to woodcutting location using opposite direction
+        if self.bank_minimap_direction:
+            opposite_direction = self.__get_opposite_direction(self.bank_minimap_direction)
+            if opposite_direction:
+                self.log_msg(f"Returning to woodcutting location ({opposite_direction})...")
+                self.walk_to_minimap_location(direction=opposite_direction)
+                time.sleep(2)  # Wait for character to walk back
+                
+                # Keep walking in the same direction until trees are found
+                max_walk_attempts = 10
+                walk_attempts = 0
+                while walk_attempts < max_walk_attempts:
+                    # Check if trees are found
+                    if self.move_mouse_to_nearest_item(clr.PINK):
+                        self.log_msg("Found trees, returning to woodcutting...")
+                        break
+                    
+                    # No trees found, walk further in the same direction
+                    walk_attempts += 1
+                    self.log_msg(f"Trees not found, continuing to walk {opposite_direction} ({walk_attempts}/{max_walk_attempts})...")
+                    self.walk_to_minimap_location(direction=opposite_direction)
+                    time.sleep(10)  # Wait for character to walk
+        
         return True

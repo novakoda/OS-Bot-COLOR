@@ -524,7 +524,11 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         failed_searches = 0
         max_attempts = 10
         bank_text = ["Bank", "Use"]
-
+        
+        # If minimap_direction is provided, enable minimap walking
+        if minimap_direction:
+            use_minimap = True
+        
         # Try to find and navigate to the bank
         while not self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
             if not self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
