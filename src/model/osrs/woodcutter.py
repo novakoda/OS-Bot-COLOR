@@ -198,17 +198,25 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
                 self.log_msg(f"Returning to woodcutting location ({opposite_direction})...")
                 self.walk_to_minimap_location(direction=opposite_direction)
                 time.sleep(2)  # Wait for character to walk back
-                
+
                 # Keep walking in the same direction until trees are found
                 max_walk_attempts = 10
                 walk_attempts = 0
                 while walk_attempts < max_walk_attempts:
                     # Check if trees are found
                     if self.move_mouse_to_nearest_item(clr.PINK):
-                        self.log_msg("Found trees, returning to woodcutting...")
-                        break
-                    
-                    # No trees found, walk further in the same direction
+                        # Give the client a moment to update hover text
+                        time.sleep(0.5)
+                        if self.mouseover_text(contains="Chop", color=clr.OFF_WHITE):
+                            self.log_msg("Found trees, returning to woodcutting...")
+                            self.mouse.click()
+                            time.sleep(1)
+                            break
+                        else:
+                            # Hovered object wasn't a tree, keep searching
+                            self.log_msg("Tagged object found but not a tree, continuing search...")
+
+                    # No trees found (or not a valid tree), walk further in the same direction
                     walk_attempts += 1
                     self.log_msg(f"Trees not found, continuing to walk {opposite_direction} ({walk_attempts}/{max_walk_attempts})...")
                     self.walk_to_minimap_location(direction=opposite_direction)

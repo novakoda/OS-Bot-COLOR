@@ -524,11 +524,11 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         failed_searches = 0
         max_attempts = 10
         bank_text = ["Bank", "Use"]
-        
+
         # If minimap_direction is provided, enable minimap walking
         if minimap_direction:
             use_minimap = True
-        
+
         # Try to find and navigate to the bank
         while not self.mouseover_text(contains=bank_text, color=clr.OFF_WHITE):
             if not self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
@@ -556,6 +556,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
         while not self.is_bank_open():
             print("waiting for bank to open")
             if time.time() - last_click_time >= bank_open_timeout:
+                pag.press("esc")
                 print("bank not open yet; re-clicking tag")
                 if self.move_mouse_to_bank(color, use_camera_rotation, use_minimap, minimap_direction):
                     time.sleep(0.5)  # Give time for mouseover text to update
