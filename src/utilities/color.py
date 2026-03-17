@@ -73,3 +73,6 @@ DARK_YELLOW = Color([40, 40, 0])
 DARK_RED = Color([40, 0, 0])
 DARK_GREEN = Color([0, 40, 0])
 DARK_PINK = Color([21, 0, 19])
+
+"""Wider range for thin/outline green tags (e.g. Runelite entity highlights)"""
+TAG_GREEN = Color([0, 120, 0], [100, 255, 120])

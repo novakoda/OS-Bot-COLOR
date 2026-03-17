@@ -2,6 +2,7 @@ import time
 
 import utilities.api.item_ids as ids
 import utilities.color as clr
+import utilities.imagesearch as imsearch
 import utilities.random_util as rd
 import pyautogui as pag
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
@@ -22,11 +23,13 @@ class OSRSThief(OSRSJagexAccountBot):
         super().__init__(bot_title=bot_title, description=description, debug=False)
         self.running_time = 1
         self.take_breaks = False
+        self.type = "fruit stall"
 
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 1, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
         self.options_builder.add_text_edit_option("skip_slots", "Skip Slots (space seperated)", "0 1 2")
+        self.options_builder.add_dropdown_option("type", "Type", ["fruit stall", "wealthy citizens"])
     def save_options(self, options: dict):
         for option in options:
             if option == "running_time":
@@ -35,6 +38,8 @@ class OSRSThief(OSRSJagexAccountBot):
                 self.take_breaks = options[option] != []
             elif option == "skip_slots":
                 self.skip_slots = [int(slot) for slot in options[option].split()] if options[option].strip() else []
+            elif option == "type":
+                self.type = options[option]
             else:
                 self.log_msg(f"Unknown option: {option}")
                 print("Developer: ensure that the option keys are correct, and that options are being unpacked correctly.")
@@ -43,6 +48,7 @@ class OSRSThief(OSRSJagexAccountBot):
         self.log_msg(f"Running time: {self.running_time} minutes.")
         self.log_msg(f"Bot will{' ' if self.take_breaks else ' not '}take breaks.")
         self.log_msg(f"Skipping Slots: {self.skip_slots} when dropping items.")
+        self.log_msg(f"Thieving type: {self.type}.")
         self.log_msg("Options set successfully.")
         self.options_set = True
 
@@ -51,37 +57,71 @@ class OSRSThief(OSRSJagexAccountBot):
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
 
-        self.logs = 0
-        failed_searches = 0
-        alternate = False  # Flag to alternate the order
-
-        # Main loop
         start_time = time.time()
         end_time = self.running_time * 60
-        while time.time() - start_time < end_time:
-            # 5% chance to take a break between tree searches
-            if rd.random_chance(probability=0.01) and self.take_breaks:
-                self.take_break(max_seconds=25, fancy=True)
-
-            if not self.mouseover_text(contains="Steal") and not self.move_mouse_to_nearest_item(clr.PINK):
-                failed_searches += 1
-                if failed_searches % 10 == 0:
-                    self.log_msg("Searching for tagged items...")
-                if failed_searches > 60:
-                    # If we've been searching for a whole minute...
-                    self.__logout("No tagged items found. Logging out.")
-                time.sleep(1)
-                continue
+        if self.type == "fruit stall":
             failed_searches = 0
 
-             # Click if the mouseover text assures us we're clicking a tree
-            if not self.mouseover_text(contains="Steal"):
-                continue
-            self.mouse.click()
-            time.sleep(random.betavariate(1, 3))
-            self.drop_all(skip_slots=self.skip_slots)
-            time.sleep(random.betavariate(1, 3))
-            self.update_progress((time.time() - start_time) / end_time)
+            # Main loop for fruit stall stealing
+            while time.time() - start_time < end_time:
+                # 5% chance to take a break between searches
+                if rd.random_chance(probability=0.01) and self.take_breaks:
+                    self.take_break(max_seconds=25, fancy=True)
+
+                if not self.mouseover_text(contains="Steal") and not self.move_mouse_to_nearest_item(clr.PINK):
+                    failed_searches += 1
+                    if failed_searches % 10 == 0:
+                        self.log_msg("Searching for tagged items...")
+                    if failed_searches > 60:
+                        # If we've been searching for a whole minute...
+                        self.__logout("No tagged items found. Logging out.")
+                    time.sleep(1)
+                    continue
+                failed_searches = 0
+
+                # Click if the mouseover text assures us we're clicking the stall
+                if not self.mouseover_text(contains="Steal"):
+                    continue
+                self.mouse.click()
+                time.sleep(random.betavariate(1, 3))
+                self.drop_all(skip_slots=self.skip_slots)
+                time.sleep(random.betavariate(1, 3))
+                self.update_progress((time.time() - start_time) / end_time)
+        else:
+            # Wealthy citizens mode: green tag = Pickpocket only; when no green tag, click coin pouch in inventory
+            coin_pouch_path = imsearch.BOT_IMAGES.joinpath("items", "coin_pouch.png")
+            failed_searches = 0
+
+            while time.time() - start_time < end_time:
+                if rd.random_chance(probability=0.01) and self.take_breaks:
+                    self.take_break(max_seconds=25, fancy=True)
+
+                # Try to find a green tag (thin-line-friendly first, then solid green)
+                green_found = self.move_mouse_to_nearest_item(clr.TAG_GREEN) or self.move_mouse_to_nearest_item(clr.GREEN)
+
+                if green_found:
+                    # Only click if we're on a green tag AND mouseover says Pickpocket
+                    if self.mouseover_text(contains="Pickpocket"):
+                        failed_searches = 0
+                        self.mouse.click()
+                        time.sleep(random.betavariate(1, 3))
+                        self.update_progress((time.time() - start_time) / end_time)
+                    else:
+                        time.sleep(0.2)
+                    continue
+
+                # No green tag on screen — click coin pouch in inventory if it exists
+                pouch = imsearch.search_img_in_rect(coin_pouch_path, self.win.control_panel, confidence=0.2)
+                if pouch:
+                    self.mouse.move_to(pouch.random_point())
+                    self.mouse.click()
+                    time.sleep(random.betavariate(0.5, 1.5))
+                    continue
+
+                failed_searches += 1
+                if failed_searches % 60 == 0:
+                    self.log_msg("Waiting for wealthy citizen pickpocket opportunity...")
+                time.sleep(1)
 
         self.update_progress(1)
         self.__logout("Finished.")
@@ -92,7 +132,7 @@ class OSRSThief(OSRSJagexAccountBot):
         self.stop()
 
 
-    def __click_object(self, wait: float = 2.5):
+    def __click_object(self, color_key_pairs, wait: float = 2.5):
         """
         Attempts to click an object with any of the provided color-key pairs.
         Args:
