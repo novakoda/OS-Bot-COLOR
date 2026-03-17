@@ -97,7 +97,7 @@ class OSRSThief(OSRSJagexAccountBot):
                     self.take_break(max_seconds=25, fancy=True)
 
                 # Try to find a green tag (thin-line-friendly first, then solid green)
-                green_found = self.move_mouse_to_nearest_item(clr.TAG_GREEN) or self.move_mouse_to_nearest_item(clr.GREEN)
+                green_found = self.move_mouse_to_nearest_item(clr.TAG_GREEN, speed="fastest") or self.move_mouse_to_nearest_item(clr.GREEN, speed="fastest")
 
                 if green_found:
                     # Only click if we're on a green tag AND mouseover says Pickpocket
