@@ -91,6 +91,7 @@ class OSRSThief(OSRSJagexAccountBot):
             # Wealthy citizens mode: green tag = Pickpocket only; when no green tag, click coin pouch in inventory
             coin_pouch_path = imsearch.BOT_IMAGES.joinpath("items", "coin_pouch.png")
             failed_searches = 0
+            last_green_visible_at = time.time()
 
             while time.time() - start_time < end_time:
                 if rd.random_chance(probability=0.01) and self.take_breaks:
@@ -100,6 +101,7 @@ class OSRSThief(OSRSJagexAccountBot):
                 green_found = self.move_mouse_to_nearest_item(clr.TAG_GREEN, speed="fastest") or self.move_mouse_to_nearest_item(clr.GREEN, speed="fastest")
 
                 if green_found:
+                    last_green_visible_at = time.time()
                     # Only click if we're on a green tag AND mouseover says Pickpocket
                     if self.mouseover_text(contains="Pickpocket"):
                         failed_searches = 0
@@ -111,12 +113,13 @@ class OSRSThief(OSRSJagexAccountBot):
                     continue
 
                 # No green tag on screen — click coin pouch in inventory if it exists
-                pouch = imsearch.search_img_in_rect(coin_pouch_path, self.win.control_panel, confidence=0.2)
-                if pouch:
-                    self.mouse.move_to(pouch.random_point())
-                    self.mouse.click()
-                    time.sleep(random.betavariate(0.5, 1.5))
-                    continue
+                if (time.time() - last_green_visible_at) >= random.uniform(7, 13):
+                    pouch = imsearch.search_img_in_rect(coin_pouch_path, self.win.control_panel, confidence=0.2)
+                    if pouch:
+                        self.mouse.move_to(pouch.random_point())
+                        self.mouse.click()
+                        time.sleep(random.betavariate(0.5, 1.5))
+                        continue
 
                 failed_searches += 1
                 if failed_searches % 60 == 0:
