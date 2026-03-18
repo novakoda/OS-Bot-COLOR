@@ -130,11 +130,3 @@ Sometimes, your bot might need to find a specific image on screen. We've modifie
 
 ## Lightning Fast Optical Character Recognition
 We've ditched machine learned OCR in favor of a much faster and more reliable custom implementation. OSBC can locate text on screen in as little as **2 milliseconds**. That's **0.002 seconds**.
-
----
-
-<p>
-  <a href="https://www.buymeacoffee.com/kelltom" target="_blank">
-    <img src="https://i.imgur.com/5X29MVY.png" alt="Buy Me A Coffee" height="60dp">
-  </a>
-</p>
