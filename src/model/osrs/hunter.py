@@ -60,10 +60,10 @@ class OSRSHunter(OSRSJagexAccountBot):
         end_time = self.running_time * 60
         while time.time() - start_time < end_time:
             # 5% chance to take a break between tree searches
-            if rd.random_chance(probability=0.05) and self.take_breaks:
+            if rd.random_chance(probability=0.01) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
 
-            if not self.mouseover_text(contains="Catch") and not self.move_mouse_to_nearest_item(clr.CYAN, speed="fast"):
+            if not self.mouseover_text(contains="Catch") and not self.move_mouse_to_nearest_item(clr.CYAN, speed="fastest"):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for tagged items...")
