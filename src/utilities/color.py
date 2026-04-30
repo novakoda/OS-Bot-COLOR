@@ -49,7 +49,7 @@ PURPLE = Color([170, 0, 255])
 RED = Color([255, 0, 0])
 WHITE = Color([255, 255, 255])
 YELLOW = Color([255, 255, 0])
-LIME_GREEN = Color([20, 140, 20], [100, 255, 100])  # For gemstone crab tags
+LIME_GREEN = Color([0, 90, 0], [100, 255, 100])  # For gemstone crab tags
 
 
 """Colors for use with semi-transparent text"""
@@ -57,7 +57,7 @@ OFF_CYAN = Color([0, 200, 200], [70, 255, 255])
 OFF_GREEN = Color([0, 100, 0], [30, 255, 255])
 OFF_ORANGE = Color([180, 100, 30], [255, 166, 103])
 OFF_WHITE = Color([190, 190, 190], [255, 255, 255])
-OFF_YELLOW = Color([190, 190, 0], [255, 255, 120])
+OFF_YELLOW = Color([90, 90, 0], [255, 255, 120])
 
 """Colors for use with minimap orb text"""
 ORB_GREEN = Color([0, 255, 0], [255, 255, 0])
