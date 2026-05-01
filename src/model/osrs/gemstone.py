@@ -60,10 +60,10 @@ class OSRSGemstone(OSRSJagexAccountBot):
                 self.take_break(max_seconds=30, fancy=True)
 
             current_time = time.time()
-            
+
             # Check if we need to do a random click (every 3-6 minutes while crab is alive)
             if current_state == "cyan":
-                # Check if CYAN tag is still visible (crab is still alive)            
+                # Check if CYAN tag is still visible (crab is still alive)
                 cyan_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.CYAN)
                 if cyan_tags and click_count < max_clicks:
                     print(f"click_count: {click_count}, max_clicks: {max_clicks}")
@@ -97,7 +97,7 @@ class OSRSGemstone(OSRSJagexAccountBot):
             # Determine new state
             new_state = None
             tags_to_use = None
-            
+
             if cyan_tags:
                 new_state = "cyan"
                 tags_to_use = cyan_tags
@@ -111,17 +111,17 @@ class OSRSGemstone(OSRSJagexAccountBot):
                 # Sort tags by distance and click the nearest one
                 tags_sorted = sorted(tags_to_use, key=RuneLiteObject.distance_from_rect_center)
                 nearest_tag = tags_sorted[0]
-                
+
                 # Move mouse to the tag and click
                 self.mouse.move_to(nearest_tag.random_point(), mouseSpeed="fast")
                 time.sleep(0.3)
                 self.mouse.click()
                 time.sleep(random.randint(6, 10))
-                
+
                 # Update state and tracking
                 current_state = new_state
                 last_click_time = current_time
-                
+
                 # If we clicked a CYAN tag (crab is alive), set next random click time
                 if new_state == "cyan":
                     next_random_click_time = current_time + random.uniform(12, 30)
@@ -130,7 +130,7 @@ class OSRSGemstone(OSRSJagexAccountBot):
                     self.log_msg("Clicked GREEN tag - moving to spawn location")
                     # Reset state after clicking green (wait for cyan to reappear)
                     current_state = None
-                
+
                 failed_searches = 0
             elif not tags_to_use:
                 # No tags found - might be between states
@@ -145,7 +145,7 @@ class OSRSGemstone(OSRSJagexAccountBot):
                 # Reset state if we've been waiting too long
                 if failed_searches > 30:
                     current_state = None
-            
+
             # Wait before checking again
             time.sleep(1)
             self.update_progress((time.time() - start_time) / end_time)
