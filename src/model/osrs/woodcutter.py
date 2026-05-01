@@ -3,6 +3,9 @@ import time
 import utilities.api.item_ids as ids
 import utilities.color as clr
 import utilities.random_util as rd
+from model.osrs.common_interactions import try_hover_target
+from model.osrs.common_banking import deposit_and_optionally_return
+from model.osrs.common_navigation import SearchRetry, get_opposite_direction
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
 from utilities.api.morg_http_client import MorgHTTPSocket
@@ -61,7 +64,7 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         self.mouse.click()
 
         self.logs = 0
-        failed_searches = 0
+        search_retry = SearchRetry()
 
         # Main loop
         start_time = time.time()
@@ -92,20 +95,20 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
 
 
             # If our mouse isn't hovering over a tree, and we can't find another tree...
-            if not self.mouseover_text(contains="Chop", color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.PINK):
-                failed_searches += 1
-                if failed_searches % 10 == 0:
+            hovered_tree = try_hover_target(
+                move_mouse=lambda: self.move_mouse_to_nearest_item(clr.PINK),
+                is_valid_hover=lambda: self.mouseover_text(contains="Chop", color=clr.OFF_WHITE),
+            )
+            if not hovered_tree:
+                search_retry.fail()
+                if search_retry.every(10):
                     self.log_msg("Searching for trees...")
-                if failed_searches > 60:
+                if search_retry.exceeded(60):
                     # If we've been searching for a whole minute...
                     self.__logout("No tagged trees found. Logging out.")
                 time.sleep(1)
                 continue
-            failed_searches = 0  # If code got here, a tree was found
-
-            # Click if the mouseover text assures us we're clicking a tree
-            if not self.mouseover_text(contains="Chop", color=clr.OFF_WHITE):
-                continue
+            search_retry.reset()
             self.mouse.click()
             time.sleep(1)
 
@@ -166,21 +169,7 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         Returns:
             The opposite direction string, or None if direction is None
         """
-        if not direction:
-            return None
-        
-        opposite_map = {
-            "north": "south",
-            "south": "north",
-            "east": "west",
-            "west": "east",
-            "northeast": "southwest",
-            "northwest": "southeast",
-            "southeast": "northwest",
-            "southwest": "northeast",
-        }
-        
-        return opposite_map.get(direction.lower())
+        return get_opposite_direction(direction)
 
     def __deposit_to_bank(self) -> bool:
         """
@@ -188,18 +177,18 @@ class OSRSWoodcutter(OSRSJagexAccountBot):
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
-        if not self.deposit_to_bank(color=clr.YELLOW, minimap_direction=self.bank_minimap_direction):
+        if not deposit_and_optionally_return(
+            self,
+            color=clr.YELLOW,
+            minimap_direction=self.bank_minimap_direction,
+            return_wait_seconds=2,
+        ):
             return False
-        
-        # Return to woodcutting location using opposite direction
-        if self.bank_minimap_direction:
-            opposite_direction = self.__get_opposite_direction(self.bank_minimap_direction)
-            if opposite_direction:
-                self.log_msg(f"Returning to woodcutting location ({opposite_direction})...")
-                self.walk_to_minimap_location(direction=opposite_direction)
-                time.sleep(2)  # Wait for character to walk back
 
-                # Keep walking in the same direction until trees are found
+        # Continue walking until we are back at tagged trees.
+        if self.bank_minimap_direction:
+            opposite_direction = get_opposite_direction(self.bank_minimap_direction)
+            if opposite_direction:
                 max_walk_attempts = 10
                 walk_attempts = 0
                 while walk_attempts < max_walk_attempts:

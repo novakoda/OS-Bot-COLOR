@@ -49,6 +49,7 @@ class OSRSGemstone(OSRSJagexAccountBot):
         current_state = None  # Track current state: "cyan" (attacking), "green" (moving), or None
         click_count = 0
         max_clicks = random.randint(2, 4)
+        debug_loop_count = 0
 
         # Main loop
         start_time = time.time()
@@ -86,7 +87,12 @@ class OSRSGemstone(OSRSJagexAccountBot):
 
             # Search for either CYAN (alive crab) or GREEN (spawn location) tags
             cyan_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.CYAN)
-            green_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.LIME_GREEN)
+            green_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.OFF_YELLOW)
+            debug_loop_count += 1
+            if debug_loop_count % 3 == 0:
+                self.log_msg(
+                    f"[DEBUG] Tags found -> CYAN: {len(cyan_tags)}, LIME_GREEN: {len(green_tags)}, state: {current_state}"
+                )
 
             # Determine new state
             new_state = None
@@ -101,6 +107,7 @@ class OSRSGemstone(OSRSJagexAccountBot):
 
             # Only click if state has changed (new tag appeared)
             if new_state != current_state and tags_to_use:
+                self.log_msg(f"[DEBUG] State change -> {current_state} -> {new_state}")
                 # Sort tags by distance and click the nearest one
                 tags_sorted = sorted(tags_to_use, key=RuneLiteObject.distance_from_rect_center)
                 nearest_tag = tags_sorted[0]
@@ -128,6 +135,8 @@ class OSRSGemstone(OSRSJagexAccountBot):
             elif not tags_to_use:
                 # No tags found - might be between states
                 failed_searches += 1
+                if failed_searches % 5 == 0:
+                    self.log_msg(f"[DEBUG] No tags found for {failed_searches} loops.")
                 if failed_searches % 10 == 0:
                     self.log_msg("Waiting for gemstone crab tags...")
                 if failed_searches > 60:

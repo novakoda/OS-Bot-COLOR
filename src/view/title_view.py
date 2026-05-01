@@ -5,7 +5,6 @@ import customtkinter
 from PIL import Image, ImageTk
 
 from view.fonts.fonts import *
-from view.sprite_scraper_view import SpriteScraperView
 
 
 class TitleView(customtkinter.CTkFrame):
@@ -57,10 +56,3 @@ class TitleView(customtkinter.CTkFrame):
     def btn_bug_report_clicked(self):
         wb.open_new_tab("https://github.com/kelltom/OSRS-Bot-COLOR/issues/new/choose")
 
-    def btn_scraper_clicked(self):
-        window = customtkinter.CTkToplevel(master=self)
-        window.geometry("400x660")
-        window.title("OSRS Wiki Sprite Scraper")
-        view = SpriteScraperView(parent=window)
-        view.pack(side="top", fill="both", expand=True, padx=20, pady=20)
-        window.after(100, window.lift)  # Workaround for bug where main window takes focus

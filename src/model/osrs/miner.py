@@ -2,6 +2,8 @@ import time
 import utilities.api.item_ids as ids
 import utilities.color as clr
 import utilities.random_util as rd
+from model.osrs.common_interactions import try_hover_target
+from model.osrs.common_navigation import SearchRetry
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
 from utilities.geometry import RuneLiteObject
@@ -44,7 +46,7 @@ class OSRSMiner(OSRSJagexAccountBot):
         )
         self.options_builder.add_dropdown_option(
             "ore_type", "Ore type (only for regular mining):",
-            ["Iron", "Silver", "Coal", "Gold", "Paydirt"]
+            ["Iron", "Silver", "Coal", "Gold", "Clay", "Paydirt"]
         )
         self.options_builder.add_dropdown_option(
             "bank_minimap_direction", "Bank direction (if off-screen):",
@@ -84,11 +86,12 @@ class OSRSMiner(OSRSJagexAccountBot):
 
         start_time = time.time()
         end_time = self.running_time * 60
-        failed_searches = 0
+        search_retry = SearchRetry()
+        hopper_deposits = 0
 
         while time.time() - start_time < end_time:
             print('info panel text: ', self.info_panel_text(color=clr.OFF_WHITE))
-            if rd.random_chance(0.04) and self.take_breaks:
+            if rd.random_chance(0.003) and self.take_breaks:
                 self.take_break(max_seconds=45, fancy=True)
 
             # ================== FULL INVENTORY HANDLING ==================
@@ -112,20 +115,23 @@ class OSRSMiner(OSRSJagexAccountBot):
                 continue
 
             # ================== FIND ORE VEIN (PINK) ==================
-            if not (
-                self.mouseover_text(contains="Ore vein", color=clr.OFF_GREEN) or
-                self.mouseover_text(contains=self.ore_type, color=clr.OFF_GREEN) or
-                self.mouseover_text(contains="Mine", color=clr.OFF_GREEN)
-            ):
-                if not self.move_mouse_to_nearest_item(clr.PINK, speed="fastest"):
-                    failed_searches += 1
-                    if failed_searches % 10 == 0:
-                        self.log_msg("Searching for ore veins...")
-                    if failed_searches > 80:
-                        self.__logout("No ore veins found for too long.")
-                    time.sleep(6.5)
-                    continue
-                failed_searches = 0
+            hovered_ore = try_hover_target(
+                move_mouse=lambda: self.move_mouse_to_nearest_item(clr.PINK, speed="fastest"),
+                is_valid_hover=lambda: (
+                    self.mouseover_text(contains="Ore vein", color=clr.OFF_GREEN) or
+                    self.mouseover_text(contains=self.ore_type, color=clr.OFF_GREEN) or
+                    self.mouseover_text(contains="Mine", color=clr.OFF_GREEN)
+                ),
+            )
+            if not hovered_ore:
+                search_retry.fail()
+                if search_retry.every(10):
+                    self.log_msg("Searching for ore veins...")
+                if search_retry.exceeded(80):
+                    self.__logout("No ore veins found for too long.")
+                time.sleep(6.5)
+                continue
+            search_retry.reset()
 
             # ================== CLICK ROCK ==================
             if not self.active_message("Mining"):
@@ -138,9 +144,11 @@ class OSRSMiner(OSRSJagexAccountBot):
             hop_chance = 0.18
             wait_cycles = 0
             while self.active_message("Mining"):
-                if rd.random_chance(hop_chance):
+                if rd.random_chance(hop_chance) and self.ore_type != "Paydirt":
                     self.move_mouse_to_nearest_item(clr.PINK, next_nearest=True)
                     hop_chance /= 2
+                elif self.ore_type == "Paydirt":
+                    self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
                 time.sleep(4)
                 wait_cycles += 1
                 if wait_cycles > 40:

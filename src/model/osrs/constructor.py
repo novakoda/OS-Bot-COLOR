@@ -27,7 +27,7 @@ class OSRSConstructor(OSRSJagexAccountBot):
     def create_options(self):
         self.options_builder.add_slider_option("running_time", "How long to run (minutes)?", 5, 500)
         self.options_builder.add_checkbox_option("take_breaks", "Take breaks?", [" "])
-        self.options_builder.add_dropdown_option("item_type", "Item Type:", ["Mahogany"])
+        self.options_builder.add_dropdown_option("item_type", "Item Type:", ["Mahogany", "Oak"])
 
     def save_options(self, options: dict):
         for option in options:
@@ -47,6 +47,7 @@ class OSRSConstructor(OSRSJagexAccountBot):
         self.log_msg(f"{self.item_type} when inventory is full.")
         self.log_msg("Options set successfully.")
         self.options_set = True
+        self.min_planks = 6 if self.item_type == "Mahogany" else 8
 
     def main_loop(self):
         # Setup API
@@ -60,33 +61,32 @@ class OSRSConstructor(OSRSJagexAccountBot):
         # Main loop
         start_time = time.time()
         end_time = self.running_time * 60
+        build_key = "6" if self.item_type == "Mahogany" else "2"
+        
+
         while time.time() - start_time < end_time:
             if rd.random_chance(probability=0.05) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
+            
 
-            if self.item_type == "Mahogany":
-                if self.get_item_count("Mahogany_plank") < 6:
-                    print("Not enough mahogany planks, waiting for more...")
-                    if not self.__talk_to_butler():
-                        continue
-                    print("Waiting for mahogany planks...")
+            if self.get_item_count(f"{self.item_type}_plank") < self.min_planks:
+                print(f"Not enough {self.item_type} planks, waiting for more...")
+                if not self.__talk_to_butler():
                     continue
+                print(f"Waiting for {self.item_type} planks...")
+                continue
 
-                # build the table or destroy the table
-                if not self.__click_object([(clr.PINK, "6"), (clr.YELLOW, "1")]):
+            # build the table or destroy the table
+            if not self.__click_object([(clr.PINK, build_key), (clr.YELLOW, "1")]):
+                continue
+
+            # Wait until no more planks
+            if self.get_item_count(f"{self.item_type}_plank") < self.min_planks:
+                print(f"Not enough {self.item_type} planks, waiting for more...")
+                if not self.__talk_to_butler():
                     continue
-
-                # Wait until no more planks
-                if self.get_item_count("Mahogany_plank") < 6:
-                    print("Not enough mahogany planks, waiting for more...")
-                    if not self.__talk_to_butler():
-                        continue
-                    print("Waiting for mahogany planks...")
-                    continue
-
-            elif self.ore_type == "Oak":
-                # nothing for now
-                pass
+                print(f"Waiting for {self.item_type} planks...")
+                continue
 
             self.update_progress((time.time() - start_time) / end_time)
 
@@ -102,8 +102,8 @@ class OSRSConstructor(OSRSJagexAccountBot):
         if not self.__click_object([(clr.CYAN, "1")]):
             return True
 
-        if self.get_item_count("Mahogany_plank") < 6:
-            print("Not enough mahogany planks, waiting for more...")
+        if self.get_item_count(f"{self.item_type}_plank") < self.min_planks:
+            print(f"Not enough {self.item_type} planks, waiting for more...")
             pag.press("1")
             if not self.__click_object([(clr.CYAN, "space"), (clr.YELLOW, "1")]):
                 print("Paying butler...")

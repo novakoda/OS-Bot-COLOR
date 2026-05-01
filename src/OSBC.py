@@ -199,52 +199,6 @@ class App(customtkinter.CTk):
             settings.set("keybind", settings.default_keybind)
 
     # ============ Button Handlers ============
-    def __on_settings_clicked(self):
-        window = customtkinter.CTkToplevel(master=self)
-        window.geometry("540x287")
-        window.title("Settings")
-        view = SettingsView(parent=window)
-        view.pack(side="top", fill="both", expand=True, padx=20, pady=20)
-        window.after(100, window.lift)  # Workaround for bug where main window takes focus
-
-    def __on_game_selector_change(self, choice):
-        """
-        Handles the event that occurs when the user selects a game title from the dropdown menu.
-        Args:
-            choice: The key of the game that the user selected.
-        """
-        if choice not in list(self.btn_map.keys()):
-            return
-        # Un-highlight current button
-        if self.current_btn is not None:
-            self.current_btn.configure(fg_color=self.DEFAULT_GRAY)
-            self.current_btn = None
-        # Unpack current buttons
-        if self.current_btn_list is not None:
-            for btn in self.current_btn_list:
-                btn.grid_forget()
-        # Unpack current script view
-        if self.views["Script"].winfo_exists():
-            self.views["Script"].pack_forget()
-        # Unlink model from controller
-        self.controller.change_model(None)
-        # Pack new buttons
-        self.current_btn_list = self.btn_map[choice]
-        for r, btn in enumerate(self.current_btn_list, 3):
-            btn.grid(row=r, column=0, sticky="we", padx=10, pady=10)
-        # Repack new home view
-        self.current_home_view.pack_forget()
-        self.current_home_view = self.views[choice]
-        self.current_home_view.pack(
-            in_=self.frame_right,
-            side=tkinter.TOP,
-            fill=tkinter.BOTH,
-            expand=True,
-            padx=0,
-            pady=0,
-        )
-        self.toggle_btn_state(enabled=False)
-
     def __toggle_bot_by_key(self, bot_key, btn: customtkinter.CTkButton):
         # sourcery skip: extract-method
         """

@@ -478,11 +478,17 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         return False
 
-    def deposit(self, skip_slots: List[int] = None, keep_open: bool = False) -> None:
+    def deposit(self, skip_slots: List[int] = None, keep_open: bool = False, use_empty_slot_template: bool = True, single_inventory_click: bool = False) -> None:
         """
-        Shift-clicks inventory slots to drop items.
+        Clicks inventory slots to deposit into an open bank.
         Args:
-            slots: The indices of slots to drop.
+            skip_slots: Inventory slot indices to leave untouched (e.g. coin stack).
+            keep_open: If False, press Esc after depositing.
+            use_empty_slot_template: If True (default), skip slots that match the empty-slot template. Some items
+                (e.g. teak planks) match that template by mistake and are never deposited — set False to click every
+                non-skipped slot instead.
+            single_inventory_click: If True, only the first depositable slot is clicked (one stack). When False,
+                every non-skipped slot is clicked as usual.
         """
         self.log_msg("Depositing items to bank...")
         empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
@@ -490,7 +496,9 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             skip_slots = []
 
         for i, slot in enumerate(self.win.inventory_slots):
-            if i in skip_slots or imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
+            if i in skip_slots:
+                continue
+            if use_empty_slot_template and imsearch.search_img_in_rect(empty_img, slot, confidence=0.1):
                 continue
             p = slot.random_point()
             self.mouse.move_to(
@@ -502,12 +510,14 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
                 tween=pytweening.easeInOutQuad,
             )
             self.mouse.click()
+            if single_inventory_click:
+                break
         time.sleep(1)
 
         if not keep_open:
             pag.press("esc")
 
-    def deposit_to_bank(self, color=clr.YELLOW, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None, bank_open_timeout: int = 20) -> bool:
+    def deposit_to_bank(self, color=clr.YELLOW, skip_slots: List[int] = None, keep_open: bool = False, use_camera_rotation: bool = True, use_minimap: bool = False, minimap_direction: str = None, bank_open_timeout: int = 20, use_empty_slot_template: bool = True, single_inventory_click: bool = False) -> bool:
         """
         Handles finding and interacting with the bank when inventory is full.
         Args:
@@ -517,6 +527,8 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
             use_minimap: Whether to use minimap walking if bank still not found.
             minimap_direction: Direction to walk on minimap if use_minimap is True (e.g., "north", "south", "east", "west").
             bank_open_timeout: Seconds to wait for the bank to open before re-clicking the tag.
+            use_empty_slot_template: Passed to deposit(); see deposit() for when to set False.
+            single_inventory_click: Passed to deposit(); one click deposits one stack only.
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
@@ -573,7 +585,7 @@ class RuneLiteBot(Bot, metaclass=ABCMeta):
 
         print('depositing')
 
-        self.deposit(skip_slots, keep_open)
+        self.deposit(skip_slots, keep_open, use_empty_slot_template=use_empty_slot_template, single_inventory_click=single_inventory_click)
         return True
 
     def withdraw_item(self, item: Union[str, int] = '', keep_open: bool = False, conf: float = 0.2) -> bool:

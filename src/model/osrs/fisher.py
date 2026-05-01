@@ -6,6 +6,9 @@ import utilities.random_util as rd
 import pyautogui as pag
 import utilities.ocr as ocr
 import utilities.imagesearch as imsearch
+from model.osrs.common_banking import deposit_and_optionally_return
+from model.osrs.common_interactions import try_hover_target
+from model.osrs.common_navigation import SearchRetry, get_opposite_direction
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
 from utilities.api.morg_http_client import MorgHTTPSocket
@@ -62,7 +65,7 @@ class OSRSFisher(OSRSJagexAccountBot):
         self.mouse.click()
 
         self.logs = 0
-        failed_searches = 0
+        search_retry = SearchRetry()
 
         # Set skip slots based on fish type
         if self.fish_type == "Raw_salmon":
@@ -113,9 +116,13 @@ class OSRSFisher(OSRSJagexAccountBot):
             item_name = self.fish_type
 
             # If our mouse isn't hovering over a fishing spot, and we can't find another spot...
-            if not self.mouseover_text(contains=action_text, color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(item_name):
-                failed_searches += 1
-                if failed_searches > 5:
+            hovered_spot = try_hover_target(
+                move_mouse=lambda: self.move_mouse_to_nearest_item(item_name),
+                is_valid_hover=lambda: self.mouseover_text(contains=action_text, color=clr.OFF_WHITE),
+            )
+            if not hovered_spot:
+                search_retry.fail()
+                if search_retry.failures > 5:
                     # Try to find and click red tag as fallback
                     red_tag = self.get_nearest_tag(clr.RED)
                     if red_tag:
@@ -124,20 +131,16 @@ class OSRSFisher(OSRSJagexAccountBot):
                         time.sleep(0.5)
                         self.mouse.click()
                         time.sleep(1)
-                        failed_searches = 0  # Reset counter after clicking red tag
+                        search_retry.reset()  # Reset counter after clicking red tag
                         continue
-                if failed_searches % 10 == 0:
+                if search_retry.every(10):
                     self.log_msg("Searching for fishing spots...")
-                if failed_searches > 60:
+                if search_retry.exceeded(60):
                     # If we've been searching for a whole minute...
                     self.__logout("No fishing spots found. Logging out.")
                 time.sleep(1)
                 continue
-            failed_searches = 0  # If code got here, a fishing spot was found
-
-            # Click if the mouseover text assures us we're clicking a fishing spot
-            if not self.mouseover_text(contains=action_text, color=clr.OFF_WHITE):
-                continue
+            search_retry.reset()
             self.mouse.click()
             time.sleep(1)
 
@@ -198,21 +201,7 @@ class OSRSFisher(OSRSJagexAccountBot):
         Returns:
             The opposite direction string, or None if direction is None
         """
-        if not direction:
-            return None
-
-        opposite_map = {
-            "north": "south",
-            "south": "north",
-            "east": "west",
-            "west": "east",
-            "northeast": "southwest",
-            "northwest": "southeast",
-            "southeast": "northwest",
-            "southwest": "northeast",
-        }
-
-        return opposite_map.get(direction.lower())
+        return get_opposite_direction(direction)
 
     def __cook_fish(self):
         """
@@ -223,18 +212,18 @@ class OSRSFisher(OSRSJagexAccountBot):
         if self.active_message("Cooking"):
             return False
 
-        failed_searches = 0
-        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE) and not self.__move_mouse_to_fireplace():
-            failed_searches += 1
-            if failed_searches % 10 == 0:
+        search_retry = SearchRetry()
+        if not try_hover_target(
+            move_mouse=self.__move_mouse_to_fireplace,
+            is_valid_hover=lambda: self.mouseover_text(contains="Cook", color=clr.OFF_WHITE),
+        ):
+            search_retry.fail()
+            if search_retry.every(10):
                 self.log_msg("Searching for cooking location...")
-            if failed_searches > 60:
+            if search_retry.exceeded(60):
                 # If we've been searching for a whole minute...
                 self.__logout("No tagged cooking locations found. Logging out.")
             time.sleep(1)
-            return False
-
-        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE):
             return False
         self.mouse.click()
 
@@ -294,16 +283,14 @@ class OSRSFisher(OSRSJagexAccountBot):
             time.sleep(0.5)
 
         # Deposit to bank (blue tag)
-        if not self.deposit_to_bank(color=clr.BLUE, skip_slots=self.skip_slots, minimap_direction=self.bank_minimap_direction):
+        if not deposit_and_optionally_return(
+            self,
+            color=clr.BLUE,
+            skip_slots=self.skip_slots,
+            minimap_direction=self.bank_minimap_direction,
+            return_wait_seconds=2,
+        ):
             return False
-
-        # Return to fishing location using opposite direction
-        if self.bank_minimap_direction:
-            opposite_direction = self.__get_opposite_direction(self.bank_minimap_direction)
-            if opposite_direction:
-                self.log_msg(f"Returning to fishing location ({opposite_direction})...")
-                self.walk_to_minimap_location(direction=opposite_direction)
-                time.sleep(2)  # Wait for character to walk back
 
         return True
 
@@ -314,4 +301,9 @@ class OSRSFisher(OSRSJagexAccountBot):
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
-        return self.deposit_to_bank(color=clr.YELLOW, minimap_direction=self.bank_minimap_direction)
+        return deposit_and_optionally_return(
+            self,
+            color=clr.YELLOW,
+            minimap_direction=self.bank_minimap_direction,
+            return_wait_seconds=2,
+        )

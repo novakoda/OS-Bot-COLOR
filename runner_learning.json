@@ -1,0 +1,3129 @@
+{
+  "successful_actions": {
+    "green_Click_obstacle": 1238,
+    "green_Climb_obstacle": 494,
+    "green_Jump_obstacle": 1808,
+    "yellow_Vault_obstacle": 1,
+    "yellow_Click_obstacle": 602,
+    "yellow_Jump_obstacle": 2,
+    "green_Take_mark": 94,
+    "green_Vault_obstacle": 60,
+    "green_Cross_obstacle": 391,
+    "yellow_Climb_obstacle": 50
+  },
+  "failed_actions": {
+    "green_Click_obstacle": 177,
+    "green_Jump_obstacle": 20,
+    "yellow_Jump_obstacle": 2,
+    "green_Climb_obstacle": 3,
+    "yellow_Click_obstacle": 168,
+    "green_Take_mark": 28,
+    "green_Cross_obstacle": 1,
+    "yellow_Climb_obstacle": 185,
+    "yellow_Cross_obstacle": 1
+  },
+  "mark_of_grace_patterns": [
+    {
+      "timestamp": 1764178516.9229388,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764178940.8589463,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764179243.996639,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764179684.1515932,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764179922.832883,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764179929.32268,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764180300.4987495,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764180565.1116767,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764180571.6233754,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764181005.5140724,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764181011.957295,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764181283.3133783,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764182088.7858741,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764182373.7870574,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764182380.1519706,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764185120.2441444,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764185759.7312787,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764185959.3408978,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764186220.8195627,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764186486.1391785,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764186952.8348703,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764186959.1954775,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241063.9081101,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241369.3512418,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241375.8779254,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241555.5575392,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241704.409824,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764241710.8556721,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242022.339656,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242308.640865,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242315.1579149,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242441.3995743,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242661.937529,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764242883.940342,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764243111.0144491,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764243316.910048,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764243483.4226866,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764243682.1577837,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764243831.8860514,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764244103.830933,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764244342.3549786,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764244479.9681187,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764244687.5855823,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764244837.737228,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764245030.806986,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 7,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764247119.804608,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764247370.05648,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764248021.8092694,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764248173.5656343,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764249082.8047864,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764249530.3292155,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764249536.697566,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764250755.725572,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764251369.053931,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764251624.1210663,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764251973.3133888,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764252238.0348604,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764252244.395936,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764252442.9813669,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253028.674546,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253258.4929895,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253514.3459582,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253520.8213737,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253757.9297519,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253764.3995845,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764253959.462155,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764254584.861372,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764254591.1949208,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764254704.1187987,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764255165.0017467,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764255325.453953,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764255846.7942169,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764256464.3617492,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764256470.8649673,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764256693.748526,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764256876.5304313,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764256882.9136865,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764257362.049198,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708191.2167447,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708412.1905336,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708420.268143,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708595.5311975,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 3,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708900.1676471,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764708908.3849967,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709313.461364,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709321.5900211,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709572.5698211,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709580.7592907,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709848.7784915,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764709856.9901862,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764710271.8927226,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764710280.1106908,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764710466.1344044,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764710474.306512,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764710638.863054,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764711262.4228258,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764711270.645661,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764711449.1537955,
+      "success": false,
+      "tag_type": "green",
+      "is_idle": false,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764711457.3413782,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 5,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715672.3410106,
+      "success": true,
+      "tag_type": "green",
+      "is_idle": true,
+      "num_yellow_tags": 3,
+      "has_green_tag": true
+    }
+  ],
+  "stuck_patterns": [
+    {
+      "timestamp": 1764714150.0026958,
+      "position": [
+        593,
+        878
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714109.242107
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714118.4254236
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714127.4854963
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714136.6697586
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714145.8147
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714150.0026958,
+      "position": [
+        593,
+        878
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714109.242107
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714118.4254236
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714127.4854963
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714136.6697586
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714145.8147
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714197.8088,
+      "position": [
+        1362,
+        1240
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714157.221346
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714166.3315456
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714175.498798
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714184.5485415
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714193.6152656
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714197.8088,
+      "position": [
+        1362,
+        1240
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714157.221346
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714166.3315456
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714175.498798
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714184.5485415
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714193.6152656
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714269.392235,
+      "position": [
+        659,
+        1025
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714228.4942126
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714237.666205
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714246.782644
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714256.0212939
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714265.199883
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714269.392235,
+      "position": [
+        659,
+        1025
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714228.4942126
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714237.666205
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714246.782644
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714256.0212939
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714265.199883
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714317.3542078,
+      "position": [
+        1484,
+        1172
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714276.5221424
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714285.6660867
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714294.8111744
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714303.989261
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714313.1492503
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714317.3542078,
+      "position": [
+        1484,
+        1172
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714276.5221424
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714285.6660867
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714294.8111744
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714303.989261
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714313.1492503
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714388.5714161,
+      "position": [
+        738,
+        1116
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714347.8182971
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714356.9329615
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714366.0498087
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714375.2007198
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714384.366937
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714388.5714161,
+      "position": [
+        738,
+        1116
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714347.8182971
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714356.9329615
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714366.0498087
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714375.2007198
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714384.366937
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714436.333663,
+      "position": [
+        1572,
+        1090
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714395.6502771
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714404.8007069
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714413.9727259
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714422.9512715
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714432.145652
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714436.333663,
+      "position": [
+        1572,
+        1090
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714395.6502771
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714404.8007069
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714413.9727259
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714422.9512715
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714432.145652
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714507.2335458,
+      "position": [
+        831,
+        1192
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714466.5407274
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714475.7242815
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714484.8078613
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714493.9574995
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714503.046696
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714507.2335458,
+      "position": [
+        831,
+        1192
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714466.5407274
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714475.7242815
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714484.8078613
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714493.9574995
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714503.046696
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714559.3674736,
+      "position": [
+        1633,
+        1010
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714514.4588234
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714523.6574378
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714532.8034294
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714545.9966109
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714555.1800463
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714559.3674736,
+      "position": [
+        1633,
+        1010
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714514.4588234
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714523.6574378
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714532.8034294
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714545.9966109
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714555.1800463
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714630.7855737,
+      "position": [
+        937,
+        1246
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714590.059132
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714599.1472018
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714608.2751095
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714617.4535713
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714626.5964046
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714630.7855737,
+      "position": [
+        937,
+        1246
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714590.059132
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714599.1472018
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714608.2751095
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714617.4535713
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714626.5964046
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714678.7911606,
+      "position": [
+        1691,
+        884
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714637.9925418
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714647.0990107
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714656.2199926
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714665.4319186
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714674.6036723
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714678.7911606,
+      "position": [
+        1691,
+        884
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714637.9925418
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714647.0990107
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714656.2199926
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714665.4319186
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714674.6036723
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714755.0195565,
+      "position": [
+        1075,
+        1280
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714709.288213
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714718.4265673
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714727.5157218
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714736.6258852
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714750.8160093
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714755.0195565,
+      "position": [
+        1075,
+        1280
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714709.288213
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714718.4265673
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714727.5157218
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714736.6258852
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714750.8160093
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714826.4825401,
+      "position": [
+        567,
+        751
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714785.6276176
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714794.7928243
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714803.9104588
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714813.06055
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714822.271605
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714826.4825401,
+      "position": [
+        567,
+        751
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714785.6276176
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714794.7928243
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714803.9104588
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714813.06055
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714822.271605
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714874.3769715,
+      "position": [
+        1216,
+        1280
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714833.7280405
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714842.815192
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714851.9610226
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714861.1334324
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714870.1831465
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714874.3769715,
+      "position": [
+        1216,
+        1280
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714833.7280405
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714842.815192
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714851.9610226
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714861.1334324
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714870.1831465
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714945.5109732,
+      "position": [
+        590,
+        868
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714904.7609751
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714913.8840353
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714923.023772
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714932.105941
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714941.3010302
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714945.5109732,
+      "position": [
+        590,
+        868
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714904.7609751
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714913.8840353
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714923.023772
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714932.105941
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714941.3010302
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714993.4939141,
+      "position": [
+        1332,
+        1251
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714952.7787738
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714961.8503623
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714971.051051
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714980.212796
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714989.301887
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764714993.4939141,
+      "position": [
+        1332,
+        1251
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714952.7787738
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714961.8503623
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714971.051051
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714980.212796
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764714989.301887
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715064.9449112,
+      "position": [
+        643,
+        998
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715024.118688
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715033.379475
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715042.4860835
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715051.6185591
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715060.7626977
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715064.9449112,
+      "position": [
+        643,
+        998
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715024.118688
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715033.379475
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715042.4860835
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715051.6185591
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715060.7626977
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715112.723375,
+      "position": [
+        1460,
+        1192
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715072.079876
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715081.2134416
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715090.3303695
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715099.4210954
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715108.5302684
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715112.723375,
+      "position": [
+        1460,
+        1192
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715072.079876
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715081.2134416
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715090.3303695
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715099.4210954
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715108.5302684
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715184.291118,
+      "position": [
+        716,
+        1094
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715143.503514
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715152.6360192
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715161.8096144
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715170.9707305
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715180.1035388
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715184.291118,
+      "position": [
+        716,
+        1094
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715143.503514
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715152.6360192
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715161.8096144
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715170.9707305
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715180.1035388
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715232.224784,
+      "position": [
+        1552,
+        1113
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715191.4254317
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715200.5084138
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715209.698141
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715218.891531
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715228.0092905
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715232.224784,
+      "position": [
+        1552,
+        1113
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715191.4254317
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715200.5084138
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715209.698141
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715218.891531
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715228.0092905
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715303.7209468,
+      "position": [
+        839,
+        1197
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715262.819958
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715272.0660248
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715281.2831936
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715290.399168
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715299.5164387
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715303.7209468,
+      "position": [
+        839,
+        1197
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715262.819958
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715272.0660248
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715281.2831936
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715290.399168
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715299.5164387
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715351.7425818,
+      "position": [
+        1648,
+        984
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715310.9271874
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715320.1101406
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715329.2657535
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715338.3831494
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715347.548865
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715351.7425818,
+      "position": [
+        1648,
+        984
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715310.9271874
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715320.1101406
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715329.2657535
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715338.3831494
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715347.548865
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715939.7102551,
+      "position": [
+        965,
+        772
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715899.1411085
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715908.266323
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715917.3562698
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715926.48448
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715935.530247
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715939.7102551,
+      "position": [
+        965,
+        772
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715899.1411085
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715908.266323
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715917.3562698
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715926.48448
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715935.530247
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715987.361131,
+      "position": [
+        1221,
+        885
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715946.816963
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715955.9432125
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715965.0060093
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715974.1339428
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715983.183934
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764715987.361131,
+      "position": [
+        1221,
+        885
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715946.816963
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715955.9432125
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715965.0060093
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715974.1339428
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764715983.183934
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764716069.5226028,
+      "position": [
+        989,
+        803
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716023.0003252
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716032.047478
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716041.1428194
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716056.325026
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716065.3315396
+        }
+      ],
+      "num_yellow_tags": 3,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764716069.5226028,
+      "position": [
+        989,
+        803
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716023.0003252
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716032.047478
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716041.1428194
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716056.325026
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716065.3315396
+        }
+      ],
+      "num_yellow_tags": 3,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764716117.4004745,
+      "position": [
+        1247,
+        853
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716076.7417984
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716085.801772
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716094.92576
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716104.0309737
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716113.2074597
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    },
+    {
+      "timestamp": 1764716117.4004745,
+      "position": [
+        1247,
+        853
+      ],
+      "recent_actions": [
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716076.7417984
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716085.801772
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716094.92576
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716104.0309737
+        },
+        {
+          "action": "Click",
+          "is_mark": false,
+          "tag_type": "green",
+          "success": true,
+          "timestamp": 1764716113.2074597
+        }
+      ],
+      "num_yellow_tags": 4,
+      "has_green_tag": true
+    }
+  ]
+}

@@ -8,6 +8,7 @@ from .runner import OSRSRunner
 from .intelligent_runner import OSRSIntelligentRunner
 from .constructor import OSRSConstructor
 from .fletcher import OSRSFletcher
+from .plank_buyer import OSRSPlankBuyer
 from .thief import OSRSThief
 from .hunter import OSRSHunter
 from .farmer import OSRSFarmer
