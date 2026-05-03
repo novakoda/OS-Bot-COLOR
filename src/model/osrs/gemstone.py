@@ -40,6 +40,16 @@ class OSRSGemstone(OSRSJagexAccountBot):
         self.log_msg("Options set successfully.")
         self.options_set = True
 
+    def _click_tag_with_action(self, tag: RuneLiteObject, expected_action: str) -> bool:
+        """Hover a tag and click only if expected mouseover action exists."""
+        self.mouse.move_to(tag.random_point(), mouseSpeed="fast")
+        time.sleep(0.3)
+        if not self.mouseover_text(contains=expected_action, color=clr.OFF_WHITE):
+            self.log_msg(f"[DEBUG] Skipped click - missing mouseover action: {expected_action}")
+            return False
+        self.mouse.click()
+        return True
+
     def main_loop(self):
         self.log_msg("Starting gemstone crab bot...")
 
@@ -69,9 +79,10 @@ class OSRSGemstone(OSRSJagexAccountBot):
                     print(f"click_count: {click_count}, max_clicks: {max_clicks}")
                     cyan_tags_sorted = sorted(cyan_tags, key=RuneLiteObject.distance_from_rect_center)
                     nearest_cyan = cyan_tags_sorted[0]
-                    self.mouse.move_to(nearest_cyan.random_point(), mouseSpeed="fast")
                     time.sleep(random.uniform(0.25, 3))
-                    self.mouse.click()
+                    if not self._click_tag_with_action(nearest_cyan, "Attack"):
+                        time.sleep(0.5)
+                        continue
                     time.sleep(random.uniform(1, 3))
                     click_count += 1
                     continue
@@ -87,11 +98,12 @@ class OSRSGemstone(OSRSJagexAccountBot):
 
             # Search for either CYAN (alive crab) or GREEN (spawn location) tags
             cyan_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.CYAN)
-            green_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.OFF_YELLOW)
+            yellow_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.OFF_YELLOW)
+            green_tags = self.get_all_tagged_in_rect(self.win.game_view, clr.LIME_GREEN)
             debug_loop_count += 1
             if debug_loop_count % 3 == 0:
                 self.log_msg(
-                    f"[DEBUG] Tags found -> CYAN: {len(cyan_tags)}, LIME_GREEN: {len(green_tags)}, state: {current_state}"
+                    f"[DEBUG] Tags found -> CYAN: {len(cyan_tags)}, OFF_YELLOW: {len(yellow_tags)}, LIME_GREEN: {len(green_tags)}, state: {current_state}"
                 )
 
             # Determine new state
@@ -104,6 +116,9 @@ class OSRSGemstone(OSRSJagexAccountBot):
             elif green_tags:
                 new_state = "green"
                 tags_to_use = green_tags
+            elif yellow_tags:
+                new_state = "yellow"
+                tags_to_use = yellow_tags
 
             # Only click if state has changed (new tag appeared)
             if new_state != current_state and tags_to_use:
@@ -111,11 +126,18 @@ class OSRSGemstone(OSRSJagexAccountBot):
                 # Sort tags by distance and click the nearest one
                 tags_sorted = sorted(tags_to_use, key=RuneLiteObject.distance_from_rect_center)
                 nearest_tag = tags_sorted[0]
+                expected_action_map = {
+                    "cyan": "Attack",
+                    "green": "Mine",
+                    "yellow": "Crawl",
+                }
+                expected_action = expected_action_map.get(new_state)
 
-                # Move mouse to the tag and click
-                self.mouse.move_to(nearest_tag.random_point(), mouseSpeed="fast")
-                time.sleep(0.3)
-                self.mouse.click()
+                # Move mouse to the tag and click only if expected action text is visible.
+                if not expected_action or not self._click_tag_with_action(nearest_tag, expected_action):
+                    failed_searches += 1
+                    time.sleep(0.5)
+                    continue
                 time.sleep(random.randint(6, 10))
 
                 # Update state and tracking
@@ -126,8 +148,12 @@ class OSRSGemstone(OSRSJagexAccountBot):
                 if new_state == "cyan":
                     next_random_click_time = current_time + random.uniform(12, 30)
                     self.log_msg("Clicked CYAN tag - attacking crab")
+                elif new_state == "yellow":
+                    self.log_msg("Clicked YELLOW tag - moving to spawn location")
+                    # Reset state after clicking yellow (wait for cyan to reappear)
+                    current_state = None
                 elif new_state == "green":
-                    self.log_msg("Clicked GREEN tag - moving to spawn location")
+                    self.log_msg("Clicked GREEN tag - mining gemstones")
                     # Reset state after clicking green (wait for cyan to reappear)
                     current_state = None
 
