@@ -123,9 +123,12 @@ class OSRSRunner(OSRSJagexAccountBot):
                         and not used_red_take
                     ):
                         continue
+                    used_red = used_red or used_red_take
 
             if self.mouseover_text(contains=["Ladder", "Staircase"], color=clr.OFF_GREEN):
                 continue
+            if used_red:
+                time.sleep(4)
             self.mouse.click()
             time.sleep(4)
 
