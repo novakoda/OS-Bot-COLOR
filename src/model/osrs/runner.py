@@ -62,6 +62,16 @@ class OSRSRunner(OSRSJagexAccountBot):
         else:
             self._main_loop_agility_course()
 
+    def _agility_move_to_green_or_red(self, *, next_nearest: bool = False, speed: str = "fast") -> bool:
+        """
+        Prefer green course markers; if none are visible, move to a red tag (failsafe for mis-tagged / guide objects).
+        """
+        if self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=next_nearest, speed=speed):
+            return True
+        if self.get_all_tagged_in_rect(self.win.game_view, clr.GREEN):
+            return False
+        return self.move_mouse_to_nearest_item(clr.RED, next_nearest=False, speed=speed)
+
     def _main_loop_agility_course(self):
         self.logs = 0
         failed_searches = 0
@@ -73,7 +83,7 @@ class OSRSRunner(OSRSJagexAccountBot):
             if rd.random_chance(probability=0.03) and self.take_breaks:
                 self.take_break(max_seconds=12, fancy=True)
 
-            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self.move_mouse_to_nearest_item(clr.GREEN, speed="fast"):
+            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self._agility_move_to_green_or_red(speed="fast"):
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for agility course...")
@@ -84,7 +94,7 @@ class OSRSRunner(OSRSJagexAccountBot):
             failed_searches = 0
 
             if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
-                if not self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=True):
+                if not self._agility_move_to_green_or_red(next_nearest=True, speed="fast"):
                     continue
                 if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
                     continue
@@ -92,7 +102,7 @@ class OSRSRunner(OSRSJagexAccountBot):
             if self.mouseover_text(contains=["Take"], color=clr.OFF_WHITE):
                 items = self.get_all_tagged_in_rect(self.win.game_view, clr.GREEN)
                 if items and len(items) == 2:
-                    if not self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=True):
+                    if not self._agility_move_to_green_or_red(next_nearest=True, speed="fast"):
                         continue
                     if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
                         continue
