@@ -62,15 +62,20 @@ class OSRSRunner(OSRSJagexAccountBot):
         else:
             self._main_loop_agility_course()
 
-    def _agility_move_to_green_or_red(self, *, next_nearest: bool = False, speed: str = "fast") -> bool:
+    def _agility_move_to_green_or_red(self, *, next_nearest: bool = False, speed: str = "fast") -> tuple[bool, bool]:
         """
         Prefer green course markers; if none are visible, move to a red tag (failsafe for mis-tagged / guide objects).
+
+        Returns:
+            (success, used_red_failsafe) — used_red_failsafe is True when the cursor was moved to red
+            because no green tags were found; callers may click without OFF_WHITE action OCR in that case.
         """
         if self.move_mouse_to_nearest_item(clr.GREEN, next_nearest=next_nearest, speed=speed):
-            return True
+            return (True, False)
         if self.get_all_tagged_in_rect(self.win.game_view, clr.GREEN):
-            return False
-        return self.move_mouse_to_nearest_item(clr.RED, next_nearest=False, speed=speed)
+            return (False, False)
+        ok = self.move_mouse_to_nearest_item(clr.RED, next_nearest=False, speed=speed)
+        return (ok, ok)
 
     def _main_loop_agility_course(self):
         self.logs = 0
@@ -83,7 +88,8 @@ class OSRSRunner(OSRSJagexAccountBot):
             if rd.random_chance(probability=0.03) and self.take_breaks:
                 self.take_break(max_seconds=12, fancy=True)
 
-            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not self._agility_move_to_green_or_red(speed="fast"):
+            moved_ok, used_red = self._agility_move_to_green_or_red(speed="fast")
+            if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE) and not moved_ok:
                 failed_searches += 1
                 if failed_searches % 10 == 0:
                     self.log_msg("Searching for agility course...")
@@ -94,17 +100,28 @@ class OSRSRunner(OSRSJagexAccountBot):
             failed_searches = 0
 
             if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
-                if not self._agility_move_to_green_or_red(next_nearest=True, speed="fast"):
+                moved2_ok, used_red2 = self._agility_move_to_green_or_red(next_nearest=True, speed="fast")
+                if not moved2_ok:
                     continue
-                if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
+                used_red = used_red or used_red2
+                if (
+                    not self.mouseover_text(contains=actions, color=clr.OFF_WHITE)
+                    and not used_red
+                ):
                     continue
 
             if self.mouseover_text(contains=["Take"], color=clr.OFF_WHITE):
                 items = self.get_all_tagged_in_rect(self.win.game_view, clr.GREEN)
                 if items and len(items) == 2:
-                    if not self._agility_move_to_green_or_red(next_nearest=True, speed="fast"):
+                    moved_ok, used_red_take = self._agility_move_to_green_or_red(
+                        next_nearest=True, speed="fast"
+                    )
+                    if not moved_ok:
                         continue
-                    if not self.mouseover_text(contains=actions, color=clr.OFF_WHITE):
+                    if (
+                        not self.mouseover_text(contains=actions, color=clr.OFF_WHITE)
+                        and not used_red_take
+                    ):
                         continue
 
             if self.mouseover_text(contains=["Ladder", "Staircase"], color=clr.OFF_GREEN):
