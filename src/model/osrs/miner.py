@@ -46,7 +46,7 @@ class OSRSMiner(OSRSJagexAccountBot):
         )
         self.options_builder.add_dropdown_option(
             "ore_type", "Ore type (only for regular mining):",
-            ["Iron", "Silver", "Coal", "Gold", "Clay", "Paydirt"]
+            ["Iron", "Silver", "Coal", "Gold", "Clay", "Paydirt", "Calcified rocks"]
         )
         self.options_builder.add_dropdown_option(
             "bank_minimap_direction", "Bank direction (if off-screen):",
@@ -119,6 +119,7 @@ class OSRSMiner(OSRSJagexAccountBot):
                 move_mouse=lambda: self.move_mouse_to_nearest_item(clr.PINK, speed="fastest"),
                 is_valid_hover=lambda: (
                     self.mouseover_text(contains="Ore vein", color=clr.OFF_GREEN) or
+                    self.mouseover_text(contains="Calcified rocks", color=clr.OFF_GREEN) or
                     self.mouseover_text(contains=self.ore_type, color=clr.OFF_GREEN) or
                     self.mouseover_text(contains="Mine", color=clr.OFF_GREEN)
                 ),
