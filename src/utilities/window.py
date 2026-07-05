@@ -281,7 +281,7 @@ class Window:
 
             self.game_view.subtract_list = [minimap, chat, control_panel]
         self.mouseover = Rectangle(left=self.game_view.left, top=self.game_view.top, width=407, height=26)
-        self.info_panel = Rectangle(left=self.game_view.left, top=self.game_view.top+26, width=200, height=200)
+        self.info_panel = Rectangle(left=self.game_view.left, top=self.game_view.top+26, width=400, height=400)
         return True
 
     def __locate_minimap(self, client_rect: Rectangle) -> bool:

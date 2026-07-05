@@ -14,3 +14,4 @@ from .hunter import OSRSHunter
 from .farmer import OSRSFarmer
 from .herbalist import OSRSHerbalist
 from .gemstone import OSRSGemstone
+from .mixology import OSRSMixology

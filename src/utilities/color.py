@@ -51,6 +51,16 @@ WHITE = Color([255, 255, 255])
 YELLOW = Color([255, 255, 0])
 LIME_GREEN = Color([0, 90, 0], [100, 255, 100])  # For gemstone crab tags
 
+"""Mastering Mixology lever tags"""
+MIXOLOGY_AGA = Color([0, 230, 118], [0, 255, 106])   # A = Green
+MIXOLOGY_MOX = Color([3, 169, 244], [0, 192, 255])   # M = Blue
+MIXOLOGY_LYE = Color([233, 30, 99], [255, 41, 81])   # L = Red
+
+"""Mastering Mixology HUD abbreviation text (anti-aliased ranges)"""
+MIXOLOGY_HUD_AGA = Color([0, 180, 60], [120, 255, 140])
+MIXOLOGY_HUD_MOX = Color([0, 120, 160], [120, 240, 255])
+MIXOLOGY_HUD_LYE = Color([160, 10, 40], [255, 100, 120])
+
 
 """Colors for use with semi-transparent text"""
 OFF_CYAN = Color([0, 200, 200], [70, 255, 255])
