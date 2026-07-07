@@ -51,15 +51,19 @@ WHITE = Color([255, 255, 255])
 YELLOW = Color([255, 255, 0])
 LIME_GREEN = Color([0, 90, 0], [100, 255, 100])  # For gemstone crab tags
 
-"""Mastering Mixology lever tags"""
-MIXOLOGY_AGA = Color([0, 230, 118], [0, 255, 106])   # A = Green
-MIXOLOGY_MOX = Color([3, 169, 244], [0, 192, 255])   # M = Blue
-MIXOLOGY_LYE = Color([233, 30, 99], [255, 41, 81])   # L = Red
+"""Mastering Mixology lever tags (Runelite entity highlight ranges)"""
+MIXOLOGY_AGA = Color([0, 200, 70], [80, 255, 140])    # A = Green ~RGB(0, 255, 106)
+MIXOLOGY_MOX = Color([0, 150, 170], [80, 230, 255])   # M = Blue ~RGB(0, 192, 255)
+MIXOLOGY_LYE = Color([180, 10, 50], [255, 80, 120])   # L = Red ~RGB(255, 41, 81)
+MIXOLOGY_VESSEL = Color([0, 220, 220], [80, 255, 255])  # Mixing vessel
+MIXOLOGY_PROCESSOR = Color([200, 0, 200], [255, 60, 255])  # Retort / agitator / alembic
+MIXOLOGY_CONVEYOR = Color([180, 180, 0], [255, 255, 80])  # Conveyor belt
 
 """Mastering Mixology HUD abbreviation text (anti-aliased ranges)"""
 MIXOLOGY_HUD_AGA = Color([0, 180, 60], [120, 255, 140])
 MIXOLOGY_HUD_MOX = Color([0, 120, 160], [120, 240, 255])
-MIXOLOGY_HUD_LYE = Color([160, 10, 40], [255, 100, 120])
+MIXOLOGY_HUD_LYE = Color([100, 0, 25], [255, 120, 150])
+MIXOLOGY_HUD_LYE_PINK = Color([80, 0, 60], [255, 90, 255])
 
 
 """Colors for use with semi-transparent text"""
