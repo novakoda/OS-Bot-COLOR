@@ -6,9 +6,6 @@ import utilities.random_util as rd
 import pyautogui as pag
 import utilities.ocr as ocr
 import utilities.imagesearch as imsearch
-from model.osrs.common_banking import deposit_and_optionally_return
-from model.osrs.common_interactions import try_hover_target
-from model.osrs.common_navigation import SearchRetry, get_opposite_direction
 from model.osrs.jagex_account_bot import OSRSJagexAccountBot
 from model.runelite_bot import BotStatus
 from utilities.api.morg_http_client import MorgHTTPSocket
@@ -59,13 +56,29 @@ class OSRSFisher(OSRSJagexAccountBot):
         self.log_msg("Options set successfully.")
         self.options_set = True
 
+    def __move_mouse_to_fishing_spot(self, item_name: str, next_nearest: bool = False) -> bool:
+        """
+        Searches for a fishing spot image on screen using imsearch and moves the mouse to it.
+        Args:
+            item_name: The image filename (without extension) to search for, e.g. "Raw_lobster"
+            next_nearest: Not used for imsearch, kept for API parity.
+        Returns:
+            True if the image was found and mouse moved, False otherwise.
+        """
+        img = imsearch.BOT_IMAGES.joinpath("items", f"{item_name}.png")
+        result = imsearch.search_img_in_rect(img, self.win.game_view, confidence=0.2)
+        if result:
+            self.mouse.move_to(result.random_point(), mouseSpeed="fast")
+            return True
+        return False
+
     def main_loop(self):
         self.log_msg("Selecting inventory...")
         self.mouse.move_to(self.win.cp_tabs[3].random_point())
         self.mouse.click()
 
         self.logs = 0
-        search_retry = SearchRetry()
+        failed_searches = 0
 
         # Set skip slots based on fish type
         if self.fish_type == "Raw_salmon":
@@ -89,10 +102,6 @@ class OSRSFisher(OSRSJagexAccountBot):
             if rd.random_chance(probability=0.05) and self.take_breaks:
                 self.take_break(max_seconds=30, fancy=True)
 
-            # 2% chance to drop logs early
-            # if rd.random_chance(probability=0.02):
-            #     self.__drop_logs(api_s)
-
             if self.is_inventory_full():
                 print('inventory is full')
                 if self.fish_action == "Deposit fish in bank":
@@ -115,41 +124,41 @@ class OSRSFisher(OSRSJagexAccountBot):
             action_text = "Cage" if self.fish_type == "Raw_lobster" else "Lure"
             item_name = self.fish_type
 
-            # If our mouse isn't hovering over a fishing spot, and we can't find another spot...
-            hovered_spot = try_hover_target(
-                move_mouse=lambda: self.move_mouse_to_nearest_item(item_name),
-                is_valid_hover=lambda: self.mouseover_text(contains=action_text, color=clr.OFF_WHITE),
-            )
-            if not hovered_spot:
-                search_retry.fail()
-                if search_retry.failures > 5:
-                    # Try to find and click red tag as fallback
-                    red_tag = self.get_nearest_tag(clr.RED)
-                    if red_tag:
-                        self.log_msg("Using red tag fallback to find fishing spot...")
-                        self.mouse.move_to(red_tag.random_point(), mouseSpeed="fast")
-                        time.sleep(0.5)
-                        self.mouse.click()
-                        time.sleep(1)
-                        search_retry.reset()  # Reset counter after clicking red tag
-                        continue
-                if search_retry.every(10):
-                    self.log_msg("Searching for fishing spots...")
-                if search_retry.exceeded(60):
-                    # If we've been searching for a whole minute...
-                    self.__logout("No fishing spots found. Logging out.")
-                time.sleep(1)
+            # If mouse isn't already hovering a fishing spot, search for one via imsearch
+            if not self.mouseover_text(contains=action_text, color=clr.OFF_WHITE):
+                if not self.__move_mouse_to_fishing_spot(item_name):
+                    failed_searches += 1
+                    if failed_searches > 5:
+                        # Try to find and click red tag as fallback
+                        red_tag = self.get_nearest_tag(clr.RED)
+                        if red_tag:
+                            self.log_msg("Using red tag fallback to find fishing spot...")
+                            self.mouse.move_to(red_tag.random_point(), mouseSpeed="fast")
+                            time.sleep(0.5)
+                            self.mouse.click()
+                            time.sleep(1)
+                            failed_searches = 0
+                            continue
+                    if failed_searches % 10 == 0:
+                        self.log_msg("Searching for fishing spots...")
+                    if failed_searches > 60:
+                        self.__logout("No fishing spots found. Logging out.")
+                    time.sleep(1)
+                    continue
+            failed_searches = 0  # A fishing spot was found
+
+            # Click only if mouseover confirms we're on a fishing spot
+            if not self.mouseover_text(contains=action_text, color=clr.OFF_WHITE):
                 continue
-            search_retry.reset()
             self.mouse.click()
             time.sleep(1)
 
             # While the player is fishing (or moving), wait
             probability = 0.10
             while not self.idle_message('NOTfishing') and self.active_message('Fishing'):
-                # Every second there is a chance to move the mouse to the next fishing spot, lessen the chance as time goes on
+                # Every second there is a chance to move the mouse to the next fishing spot
                 if rd.random_chance(probability):
-                    self.move_mouse_to_nearest_item(item_name, next_nearest=True)
+                    self.__move_mouse_to_fishing_spot(item_name)
                     probability /= 2
                 time.sleep(1)
 
@@ -201,7 +210,21 @@ class OSRSFisher(OSRSJagexAccountBot):
         Returns:
             The opposite direction string, or None if direction is None
         """
-        return get_opposite_direction(direction)
+        if not direction:
+            return None
+
+        opposite_map = {
+            "north": "south",
+            "south": "north",
+            "east": "west",
+            "west": "east",
+            "northeast": "southwest",
+            "northwest": "southeast",
+            "southeast": "northwest",
+            "southwest": "northeast",
+        }
+
+        return opposite_map.get(direction.lower())
 
     def __cook_fish(self):
         """
@@ -212,18 +235,18 @@ class OSRSFisher(OSRSJagexAccountBot):
         if self.active_message("Cooking"):
             return False
 
-        search_retry = SearchRetry()
-        if not try_hover_target(
-            move_mouse=self.__move_mouse_to_fireplace,
-            is_valid_hover=lambda: self.mouseover_text(contains="Cook", color=clr.OFF_WHITE),
-        ):
-            search_retry.fail()
-            if search_retry.every(10):
+        failed_searches = 0
+        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE) and not self.__move_mouse_to_fireplace():
+            failed_searches += 1
+            if failed_searches % 10 == 0:
                 self.log_msg("Searching for cooking location...")
-            if search_retry.exceeded(60):
+            if failed_searches > 60:
                 # If we've been searching for a whole minute...
                 self.__logout("No tagged cooking locations found. Logging out.")
             time.sleep(1)
+            return False
+
+        if not self.mouseover_text(contains="Cook", color=clr.OFF_WHITE):
             return False
         self.mouse.click()
 
@@ -283,14 +306,16 @@ class OSRSFisher(OSRSJagexAccountBot):
             time.sleep(0.5)
 
         # Deposit to bank (blue tag)
-        if not deposit_and_optionally_return(
-            self,
-            color=clr.BLUE,
-            skip_slots=self.skip_slots,
-            minimap_direction=self.bank_minimap_direction,
-            return_wait_seconds=2,
-        ):
+        if not self.deposit_to_bank(color=clr.BLUE, skip_slots=self.skip_slots, minimap_direction=self.bank_minimap_direction):
             return False
+
+        # Return to fishing location using opposite direction
+        if self.bank_minimap_direction:
+            opposite_direction = self.__get_opposite_direction(self.bank_minimap_direction)
+            if opposite_direction:
+                self.log_msg(f"Returning to fishing location ({opposite_direction})...")
+                self.walk_to_minimap_location(direction=opposite_direction)
+                time.sleep(2)  # Wait for character to walk back
 
         return True
 
@@ -301,9 +326,4 @@ class OSRSFisher(OSRSJagexAccountBot):
         Returns:
             True if banking was successful, False if bank couldn't be found
         """
-        return deposit_and_optionally_return(
-            self,
-            color=clr.YELLOW,
-            minimap_direction=self.bank_minimap_direction,
-            return_wait_seconds=2,
-        )
+        return self.deposit_to_bank(color=clr.YELLOW, minimap_direction=self.bank_minimap_direction)
