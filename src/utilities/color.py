@@ -88,5 +88,22 @@ DARK_RED = Color([40, 0, 0])
 DARK_GREEN = Color([0, 40, 0])
 DARK_PINK = Color([21, 0, 19])
 
-"""Wider range for thin/outline green tags (e.g. Runelite entity highlights)"""
+"""Wider ranges for thin/outline Runelite highlights (anti-aliased 1-3px strokes)"""
 TAG_GREEN = Color([0, 120, 0], [100, 255, 120])
+TAG_CYAN = Color([0, 140, 140], [90, 255, 255])
+TAG_RED = Color([140, 0, 0], [255, 90, 90])
+
+"""GOTR Autopilot outlines (AARRGGBB). Avoids enemy healthbar red (~255,0,0)."""
+GOTR_URGENT = Color([160, 45, 45], [255, 140, 140])     # #E6FF5050 → RGB(255, 80, 80)
+
+
+def isolate_gotr_urgent(image: cv2.Mat) -> cv2.Mat:
+    """
+    Coral urgent outline #FF5050 (R high, G ≈ B, not a healthbar).
+    """
+    b = image[:, :, 0].astype(np.int16)
+    g = image[:, :, 1].astype(np.int16)
+    r = image[:, :, 2].astype(np.int16)
+    mask = (r >= 130) & (g >= 38) & (b >= 38) & (np.abs(g - b) <= 45) & (r > g + 25) & (g <= 150)
+    return (mask.astype(np.uint8) * 255).reshape(image.shape[0], image.shape[1], 1)
+

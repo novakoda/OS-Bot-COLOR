@@ -53,6 +53,41 @@ def extract_objects(image: cv2.Mat) -> List[RuneLiteObject]:
     return objs or []
 
 
+def extract_thin_objects(image: cv2.Mat) -> List[RuneLiteObject]:
+    """
+    Like extract_objects, but keeps 1-3px Runelite outlines that the default
+    open/erode pass would wipe out.
+    """
+    kernel = np.ones((5, 5), np.uint8)
+    mask = cv2.dilate(image, kernel, iterations=2)
+    if not np.count_nonzero(mask == 255):
+        return []
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    black_image = np.zeros(mask.shape, dtype="uint8")
+    close_kernel = np.ones((3, 3), np.uint8)
+    objs: List[RuneLiteObject] = []
+    for index in range(len(contours)):
+        if len(contours[index]) < 3:
+            continue
+        black_copy = black_image.copy()
+        cv2.drawContours(black_copy, contours, index, (255, 255, 255), -1)
+        black_copy = cv2.morphologyEx(black_copy, cv2.MORPH_CLOSE, close_kernel)
+        if not np.count_nonzero(black_copy == 255):
+            continue
+        indices = np.where(black_copy == 255)
+        if indices[0].size == 0:
+            continue
+        x_min, x_max = np.min(indices[1]), np.max(indices[1])
+        y_min, y_max = np.min(indices[0]), np.max(indices[0])
+        width, height = x_max - x_min, y_max - y_min
+        if width * height < 12:
+            continue
+        center = [int(x_min + (width / 2)), int(y_min + (height / 2))]
+        axis = np.column_stack((indices[1], indices[0]))
+        objs.append(RuneLiteObject(x_min, x_max, y_min, y_max, width, height, center, axis))
+    return objs or []
+
+
 def is_point_obstructed(point: Point, im: cv2.Mat, span: int = 30) -> bool:
     """
     This function determines if there are non-black pixels in an image around a given point.
