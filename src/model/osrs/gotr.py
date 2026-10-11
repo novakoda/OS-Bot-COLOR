@@ -1,6 +1,7 @@
 import time
 
 import utilities.color as clr
+import utilities.imagesearch as imsearch
 import utilities.random_util as rd
 import utilities.runelite_cv as rcv
 from model.osrs.common_interactions import try_hover_target
@@ -80,30 +81,28 @@ class OSRSGotr(OSRSJagexAccountBot):
                 self.update_progress((time.time() - start_time) / end_time)
                 continue
 
-            if self.active_message("Mining"):
-                self._mine_while_cyan()
-                self.update_progress((time.time() - start_time) / end_time)
-                continue
-
-            if self.active_message("Crafting"):
-                time.sleep(0.6)
-                continue
-
             hovered = self._hover_tagged(HIGHLIGHT, REGULAR_ACTIONS)
             if hovered == "Mine":
                 search_retry.reset()
-                self._click_and_remember_tags()
+                if not self.active_message("Mining"):
+                    self._click_and_remember_tags()
                 self._mine_while_cyan()
                 self.update_progress((time.time() - start_time) / end_time)
                 continue
 
-            if hovered in ("Work", "Craft"):
+            if hovered == "Work":
                 search_retry.reset()
                 self._click_and_remember_tags()
                 self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
-                self._wait_skill("Crafting", start_timeout=8)
-                if self._climb_if_tags_still():
-                    self.log_msg("Tags did not move, climbing...")
+                self._wait_while_crafting()
+                self.update_progress((time.time() - start_time) / end_time)
+                continue
+
+            if hovered == "Craft":
+                search_retry.reset()
+                self._click_and_remember_tags()
+                self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
+                self._wait_until_cyan_leaves("Craft")
                 self.update_progress((time.time() - start_time) / end_time)
                 continue
 
@@ -134,24 +133,30 @@ class OSRSGotr(OSRSJagexAccountBot):
         self.__logout("Finished.")
 
     def _mine_while_cyan(self):
-        """Keep mining guardian remains until Autopilot removes the cyan Mine tag."""
+        """Keep mining until Autopilot's cyan target is no longer the rocks."""
+        mine_pos = self._tag_center(HIGHLIGHT)
         missed_starts = 0
         while True:
             if self._nearest_thin_tag(URGENT):
                 return
-            if self.active_message("Mining"):
-                missed_starts = 0
-                time.sleep(0.5)
-                continue
-            if not self._nearest_thin_tag(HIGHLIGHT):
-                return
-            hovered = self._hover_tagged(HIGHLIGHT, REGULAR_ACTIONS)
+            hovered = self._hover_cyan_destination()
             if hovered != "Mine":
                 return
+            dest = self._farthest_thin_tag(HIGHLIGHT)
+            if mine_pos and dest:
+                center = dest.center()
+                if abs(center.x - mine_pos[0]) > 70 or abs(center.y - mine_pos[1]) > 70:
+                    return
+            if self.active_message("Mining"):
+                missed_starts = 0
+                time.sleep(0.35)
+                continue
             self._click_and_remember_tags()
             self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
-            started = self._wait_skill("Mining", start_timeout=6.5)
+            started = self._wait_status_start("Mining", start_timeout=6.5)
             if self._nearest_thin_tag(URGENT):
+                return
+            if self._hover_cyan_destination() != "Mine":
                 return
             if started:
                 missed_starts = 0
@@ -160,6 +165,16 @@ class OSRSGotr(OSRSJagexAccountBot):
             if self._climb_if_tags_still() or (missed_starts >= 2 and self._climb()):
                 self.log_msg("Cyan rocks not reachable, climbing...")
                 missed_starts = 0
+
+    def _wait_status_start(self, status: str, start_timeout: float) -> bool:
+        tstart = time.time()
+        while time.time() - tstart < start_timeout:
+            if self._nearest_thin_tag(URGENT):
+                return False
+            if self.active_message(status):
+                return True
+            time.sleep(0.4)
+        return False
 
     def _hover_has(self, actions: list[str]) -> bool:
         return self.mouseover_text(contains=actions, color=MOUSEOVER_COLORS)
@@ -230,6 +245,27 @@ class OSRSGotr(OSRSJagexAccountBot):
         if next_nearest:
             return candidates[1] if len(candidates) > 1 else None
         return candidates[0]
+
+    def _farthest_thin_tag(self, color: clr.Color):
+        objs = self._thin_tags(color)
+        if not objs:
+            return None
+        compact = [obj for obj in objs if not self._is_path_line(obj)]
+        candidates = compact or objs
+        candidates = sorted(candidates, key=RuneLiteObject.distance_from_rect_center, reverse=True)
+        return candidates[0]
+
+    def _hover_cyan_destination(self) -> str | None:
+        """
+        Always move to the cyan Autopilot target (the far outline, not the path
+        at the player's feet) before reading hover text.
+        """
+        tag = self._farthest_thin_tag(HIGHLIGHT)
+        if not tag:
+            return None
+        self.mouse.move_to(self._tag_aim_point(tag), mouseSpeed="fast")
+        time.sleep(0.15)
+        return self._current_action(REGULAR_ACTIONS)
 
     def _tag_aim_point(self, obj: RuneLiteObject) -> Point:
         """
@@ -361,22 +397,53 @@ class OSRSGotr(OSRSJagexAccountBot):
         time.sleep(rd.fancy_normal_sample(2.4, 3.8))
         return True
 
-    def _wait_skill(self, status: str, start_timeout: float) -> bool:
-        tstart = time.time()
-        while time.time() - tstart < start_timeout:
-            if self._nearest_thin_tag(URGENT):
-                return False
-            if self.active_message(status):
-                break
-            time.sleep(0.4)
-        else:
-            return False
+    def _empty_slot_count(self) -> int:
+        empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
+        count = 0
+        for slot in self.win.inventory_slots:
+            if imsearch.search_img_in_rect(empty_img, slot, confidence=0.05):
+                count += 1
+        return count
 
-        while self.active_message(status):
+    def _wait_while_crafting(self):
+        """
+        Workbench crafting has no status text. Wait while empty slots fill.
+        Stop when the inventory is full, cyan leaves Work/Craft, or an urgent tag appears.
+        """
+        last_empty = self._empty_slot_count()
+        no_progress = 0
+        filling = False
+        while True:
             if self._nearest_thin_tag(URGENT):
-                break
-            time.sleep(0.6)
-        return True
+                return
+            empty = self._empty_slot_count()
+            if empty == 0:
+                return
+            hovered = self._hover_cyan_destination()
+            if hovered not in (None, "Work", "Craft"):
+                return
+            if empty < last_empty:
+                last_empty = empty
+                filling = True
+                no_progress = 0
+            else:
+                no_progress += 1
+            stall_limit = 12 if filling else 20
+            if no_progress >= stall_limit:
+                if self._climb_if_tags_still() or self._climb():
+                    self.log_msg("Crafting did not fill inventory, climbing...")
+                return
+            time.sleep(0.5)
+
+    def _wait_until_cyan_leaves(self, action: str):
+        """Wait at an altar (or similar) until cyan is no longer that action or urgent appears."""
+        while True:
+            if self._nearest_thin_tag(URGENT):
+                return
+            hovered = self._hover_cyan_destination()
+            if hovered != action:
+                return
+            time.sleep(0.5)
 
     def _wait_travel(self):
         self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
