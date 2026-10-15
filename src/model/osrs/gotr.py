@@ -29,7 +29,8 @@ class OSRSGotr(OSRSJagexAccountBot):
             "Plugin colours:\n"
             "  Regular highlight = CYAN (Enter, Craft, Power, Place, Mine, Work)\n"
             "  Urgent highlight = #FF5050 (Enter, Deposit)\n"
-            "Tag climb rubble PINK (Climb) with entity highlighter.\n\n"
+            "Tag climb rubble PINK (Climb). Tag rune altars PINK (Craft) as a fallback "
+            "when Autopilot does not outline them.\n\n"
             "If cyan rocks cannot be reached, the bot climbs pink first. "
             "After mining it climbs pink to reach the workbench."
         )
@@ -83,12 +84,19 @@ class OSRSGotr(OSRSJagexAccountBot):
 
             hovered = self._hover_tagged(HIGHLIGHT, REGULAR_ACTIONS)
             if hovered == "Mine":
-                search_retry.reset()
-                if not self.active_message("Mining"):
-                    self._click_and_remember_tags()
-                self._mine_while_cyan()
-                self.update_progress((time.time() - start_time) / end_time)
-                continue
+                if self.is_inventory_full():
+                    hovered = self._hover_cyan_destination()
+                    if hovered == "Mine":
+                        time.sleep(0.3)
+                        self.update_progress((time.time() - start_time) / end_time)
+                        continue
+                else:
+                    search_retry.reset()
+                    if not self.active_message("Mining"):
+                        self._click_and_remember_tags()
+                    self._mine_while_cyan()
+                    self.update_progress((time.time() - start_time) / end_time)
+                    continue
 
             if hovered == "Work":
                 search_retry.reset()
@@ -121,6 +129,12 @@ class OSRSGotr(OSRSJagexAccountBot):
                 self.log_msg("Climbing to reach cyan action...")
                 continue
 
+            if not self._nearest_thin_tag(HIGHLIGHT) and self._click_pink_craft():
+                search_retry.reset()
+                self._wait_until_cyan_or_urgent()
+                self.update_progress((time.time() - start_time) / end_time)
+                continue
+
             search_retry.fail()
             if search_retry.every(10):
                 self.log_msg("Waiting for GOTR Autopilot highlights...")
@@ -137,7 +151,7 @@ class OSRSGotr(OSRSJagexAccountBot):
         mine_pos = self._tag_center(HIGHLIGHT)
         missed_starts = 0
         while True:
-            if self._nearest_thin_tag(URGENT):
+            if self._nearest_thin_tag(URGENT) or self.is_inventory_full():
                 return
             hovered = self._hover_cyan_destination()
             if hovered != "Mine":
@@ -154,7 +168,7 @@ class OSRSGotr(OSRSJagexAccountBot):
             self._click_and_remember_tags()
             self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
             started = self._wait_status_start("Mining", start_timeout=6.5)
-            if self._nearest_thin_tag(URGENT):
+            if self._nearest_thin_tag(URGENT) or self.is_inventory_full():
                 return
             if self._hover_cyan_destination() != "Mine":
                 return
@@ -173,6 +187,8 @@ class OSRSGotr(OSRSJagexAccountBot):
                 return False
             if self.active_message(status):
                 return True
+            if status == "Mining" and self.is_inventory_full():
+                return False
             time.sleep(0.4)
         return False
 
@@ -396,6 +412,26 @@ class OSRSGotr(OSRSJagexAccountBot):
         self.mouse.click()
         time.sleep(rd.fancy_normal_sample(2.4, 3.8))
         return True
+
+    def _click_pink_craft(self) -> bool:
+        """Fallback: pink-tagged altar with Craft, used when Autopilot shows no cyan."""
+        pinks = [obj for obj in self._thin_tags(clr.PINK) if not self._is_path_line(obj)]
+        pinks = sorted(pinks, key=RuneLiteObject.distance_from_rect_center)
+        for tag in pinks:
+            self.mouse.move_to(tag.random_point(), mouseSpeed="fast")
+            time.sleep(0.15)
+            if not self._hover_has(["Craft"]):
+                continue
+            self._click_and_remember_tags()
+            self.mouse.move_to(self.win.chat.random_point(), mouseSpeed="fast", knotsCount=2)
+            return True
+        return False
+
+    def _wait_until_cyan_or_urgent(self):
+        while True:
+            if self._nearest_thin_tag(URGENT) or self._nearest_thin_tag(HIGHLIGHT):
+                return
+            time.sleep(0.5)
 
     def _empty_slot_count(self) -> int:
         empty_img = imsearch.BOT_IMAGES.joinpath("ui_templates", "empty_slot.png")
